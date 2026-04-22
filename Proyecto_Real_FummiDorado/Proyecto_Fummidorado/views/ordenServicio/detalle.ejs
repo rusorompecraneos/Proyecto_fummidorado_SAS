@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Orden - Fumi Dorado</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
+                <div class="navbar__logo">FD</div>
+                <div>
+                    <div class="navbar__title">Fumi Dorado</div>
+                    <div class="navbar__subtitle">Panel Admin</div>
+                </div>
+            </div>
+            <a href="/tipoServicio" class="sidebar__item">⚙️ Tipos de Servicio</a>
+            <a href="/ordenServicio" class="sidebar__item active">📋 Órdenes de Servicio</a>
+            <a href="/producto" class="sidebar__item">🧪 Productos</a>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+
+            <!-- Encabezado -->
+            <div class="page-header">
+                <div>
+                    <a href="/ordenServicio" class="page-header__back">← Volver</a>
+                    <h2 class="page-header__title"><%= orden.codigoOs %></h2>
+                    <p class="page-header__subtitle">Detalle completo de la orden</p>
+                </div>
+                <% if(orden.estado === 'Por ejecutar') { %>
+                    <span class="badge badge--ejecutar">Por ejecutar</span>
+                <% } else if(orden.estado === 'Finalizado') { %>
+                    <span class="badge badge--finalizado">Finalizado</span>
+                <% } else if(orden.estado === 'En proceso') { %>
+                    <span class="badge badge--proceso">En proceso</span>
+                <% } else { %>
+                    <span class="badge badge--cancelado">Cancelado</span>
+                <% } %>
+            </div>
+
+            <!-- Detalle -->
+            <div class="order-detail">
+                <div class="order-detail__grid">
+                    <div class="order-detail__field">
+                        <div class="order-detail__field-label">📅 Fecha</div>
+                        <div class="order-detail__field-value"><%= orden.fechaProgramada %></div>
+                    </div>
+                    <div class="order-detail__field">
+                        <div class="order-detail__field-label">🕐 Hora</div>
+                        <div class="order-detail__field-value"><%= orden.horaInicio %> - <%= orden.horaFin %></div>
+                    </div>
+                    <div class="order-detail__field">
+                        <div class="order-detail__field-label">👤 Cliente</div>
+                        <div class="order-detail__field-value"><%= orden.nombreCliente %></div>
+                    </div>
+                    <div class="order-detail__field">
+                        <div class="order-detail__field-label">📍 Sede</div>
+                        <div class="order-detail__field-value"><%= orden.nombreSede %></div>
+                    </div>
+                    <div class="order-detail__field">
+                        <div class="order-detail__field-label">🔧 Técnico</div>
+                        <div class="order-detail__field-value"><%= orden.nombreTecnico %></div>
+                    </div>
+                    <div class="order-detail__field">
+                        <div class="order-detail__field-label">⚙️ Tipo de Servicio</div>
+                        <div class="order-detail__field-value"><%= orden.nombreTipoServicio %></div>
+                    </div>
+                    <div class="order-detail__field order-detail__field--full">
+                        <div class="order-detail__field-label">📍 Dirección</div>
+                        <div class="order-detail__field-value"><%= orden.direccionSede %></div>
+                    </div>
+                    <div class="order-detail__field order-detail__field--full">
+                        <div class="order-detail__field-label">📝 Observaciones</div>
+                        <div class="order-detail__observations">
+                            <% if(orden.observaciones) { %>
+                                <%= orden.observaciones %>
+                            <% } else { %>
+                                <span class="text-faint">Sin observaciones</span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón ver formulario -->
+            <div class="flex" style="justify-content: flex-end;">
+                <a href="/formulario/<%= orden.idOrden %>" class="btn btn--primary">📝 Ver Formulario</a>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

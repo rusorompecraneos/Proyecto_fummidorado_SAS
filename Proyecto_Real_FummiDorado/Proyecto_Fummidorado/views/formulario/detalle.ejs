@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Formulario - Fumi Dorado</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
+                <div class="navbar__logo">FD</div>
+                <div>
+                    <div class="navbar__title">Fumi Dorado</div>
+                    <div class="navbar__subtitle">Panel Admin</div>
+                </div>
+            </div>
+            <a href="/tipoServicio" class="sidebar__item">⚙️ Tipos de Servicio</a>
+            <a href="/ordenServicio" class="sidebar__item">📋 Órdenes de Servicio</a>
+            <a href="/formulario" class="sidebar__item active">📝 Formularios</a>
+            <a href="/producto" class="sidebar__item">🧪 Productos</a>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+
+            <!-- Encabezado -->
+            <div class="page-header">
+                <div>
+                    <a href="/formulario" class="page-header__back">← Volver</a>
+                    <h2 class="page-header__title">Formulario <%= formulario.codigoOs %></h2>
+                    <p class="page-header__subtitle">Detalle completo del servicio</p>
+                </div>
+                <% if(formulario.estado === 'Finalizado') { %>
+                    <span class="badge badge--finalizado">Finalizado</span>
+                <% } else { %>
+                    <span class="badge badge--proceso">En proceso</span>
+                <% } %>
+            </div>
+
+            <!-- Sección 1: Datos Generales -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">1</div>
+                    <div class="step-section__title">Datos Generales</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="grid grid-2">
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">OS</div>
+                            <div class="order-detail__field-value"><%= formulario.codigoOs %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Cliente</div>
+                            <div class="order-detail__field-value"><%= formulario.nombreCliente %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Sede</div>
+                            <div class="order-detail__field-value"><%= formulario.nombreSede %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Dirección</div>
+                            <div class="order-detail__field-value"><%= formulario.direccionSede %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Técnico</div>
+                            <div class="order-detail__field-value"><%= formulario.nombreTecnico %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Fecha</div>
+                            <div class="order-detail__field-value"><%= formulario.fechaServicio %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Frecuencia</div>
+                            <div class="order-detail__field-value"><%= formulario.frecuencia %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Hora Llegada</div>
+                            <div class="order-detail__field-value"><%= formulario.horaLlegada %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Hora Inicio</div>
+                            <div class="order-detail__field-value"><%= formulario.horaInicio %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Hora Terminación</div>
+                            <div class="order-detail__field-value"><%= formulario.horaTerminacion %></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Diagnóstico e Inspección -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">2</div>
+                    <div class="step-section__title">Diagnóstico e Inspección</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="grid grid-4">
+                        <% const diagnostico = ['techo','paredes','pisos','ventanas','puertas','iluminacion','ventilacion','drenajes']; %>
+                        <% diagnostico.forEach(item => { %>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label"><%= item.charAt(0).toUpperCase() + item.slice(1) %></div>
+                            <div class="order-detail__field-value">
+                                <% if(formulario[item] === 'Adecuado') { %>
+                                    <span class="badge badge--success">Adecuado</span>
+                                <% } else { %>
+                                    <span class="badge badge--error">No adecuado</span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Control de Áreas -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">3</div>
+                    <div class="step-section__title">Control de Áreas</div>
+                </div>
+                <div class="step-section__body">
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                        <% formulario.areasControl.forEach(area => { %>
+                            <span class="badge badge--gold"><%= area %></span>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 4: Tipos y Métodos -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">4</div>
+                    <div class="step-section__title">Tipo y Método de Control</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="grid grid-2">
+                        <div>
+                            <p class="form-label">Tipos de Control</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                                <% formulario.tiposControl.forEach(tipo => { %>
+                                    <span class="badge badge--info"><%= tipo %></span>
+                                <% }) %>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="form-label">Métodos</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                                <% formulario.metodosControl.forEach(metodo => { %>
+                                    <span class="badge badge--gold"><%= metodo %></span>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 5: Plagas -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">5</div>
+                    <div class="step-section__title">Inspección del Servicio</div>
+                </div>
+                <div class="step-section__body">
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                        <% formulario.plagasEncontradas.forEach(plaga => { %>
+                            <span class="badge badge--error"><%= plaga %></span>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 6: Condiciones -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">6</div>
+                    <div class="step-section__title">Condiciones del Lugar</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="grid grid-3">
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Higiene</div>
+                            <div class="order-detail__field-value"><%= formulario.higieneLugar %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Instalaciones</div>
+                            <div class="order-detail__field-value"><%= formulario.instalaciones %></div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Estructura</div>
+                            <div class="order-detail__field-value"><%= formulario.estructura %></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 9: Observaciones -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">9</div>
+                    <div class="step-section__title">Observaciones Generales</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="order-detail__observations">
+                        <% if(formulario.observacionesGenerales) { %>
+                            <%= formulario.observacionesGenerales %>
+                        <% } else { %>
+                            <span class="text-faint">Sin observaciones</span>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 11: Firmas -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">11</div>
+                    <div class="step-section__title">Firmas Digitales</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="grid grid-2">
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Firma del Cliente</div>
+                            <div class="order-detail__field-value">
+                                <% if(formulario.firmaCliente) { %>
+                                    <span class="badge badge--success">✅ Firmado</span>
+                                <% } else { %>
+                                    <span class="badge badge--error">❌ Pendiente</span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="order-detail__field">
+                            <div class="order-detail__field-label">Firma del Técnico</div>
+                            <div class="order-detail__field-value">
+                                <% if(formulario.firmaTecnico) { %>
+                                    <span class="badge badge--success">✅ Firmado</span>
+                                <% } else { %>
+                                    <span class="badge badge--error">❌ Pendiente</span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón editar -->
+            <div class="flex" style="justify-content: flex-end;">
+                <a href="/formulario/<%= formulario.idFormulario %>/editar" class="btn btn--primary">✏️ Editar Formulario</a>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>
