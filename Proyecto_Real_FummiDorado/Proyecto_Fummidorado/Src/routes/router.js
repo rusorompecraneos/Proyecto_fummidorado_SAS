@@ -8,9 +8,7 @@ const router = Router();
 
 // Ruta principal
 router.get('/', (request, response) => {
-    response.render('index', {
-        message: 'Hello'
-    });
+    response.redirect('/login');
 });
 
 // Rutas de Tipo de Servicio
@@ -30,3 +28,4 @@ router.get('/formulario/:id/editar', editarFormulario);
 router.post('/formulario/:id/editar', guardarFormulario);
 
 export default router;
+
