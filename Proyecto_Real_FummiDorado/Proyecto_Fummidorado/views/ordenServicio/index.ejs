@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Órdenes de Servicio - Fumi Dorado</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
+                <div class="navbar__logo">FD</div>
+                <div>
+                    <div class="navbar__title">Fumi Dorado</div>
+                    <div class="navbar__subtitle">Panel Admin</div>
+                </div>
+            </div>
+            <a href="/tipoServicio" class="sidebar__item">⚙️ Tipos de Servicio</a>
+            <a href="/ordenServicio" class="sidebar__item active">📋 Órdenes de Servicio</a>
+            <a href="/producto" class="sidebar__item">🧪 Productos</a>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+
+            <!-- Encabezado -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-header__title">Gestión de Servicios</h2>
+                    <p class="page-header__subtitle">Administra órdenes de servicio</p>
+                </div>
+                <button class="btn btn--primary">+ Crear Servicio</button>
+            </div>
+
+            <!-- Tabla -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>OS</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Cliente</th>
+                            <th>Sede</th>
+                            <th>Técnico</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% ordenes.forEach(orden => { %>
+                        <tr>
+                            <td class="text-gold"><%= orden.codigoOs %></td>
+                            <td><%= orden.fechaProgramada %></td>
+                            <td><%= orden.horaInicio %></td>
+                            <td><%= orden.nombreCliente %></td>
+                            <td><%= orden.nombreSede %></td>
+                            <td><%= orden.nombreTecnico %></td>
+                            <td>
+                                <% if(orden.estado === 'Por ejecutar') { %>
+                                    <span class="badge badge--ejecutar">Por ejecutar</span>
+                                <% } else if(orden.estado === 'Finalizado') { %>
+                                    <span class="badge badge--finalizado">Finalizado</span>
+                                <% } else if(orden.estado === 'En proceso') { %>
+                                    <span class="badge badge--proceso">En proceso</span>
+                                <% } else { %>
+                                    <span class="badge badge--cancelado">Cancelado</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="/ordenServicio/<%= orden.idOrden %>" class="btn-icon btn-icon--view" title="Ver">👁️</a>
+                                    <button class="btn-icon" title="Editar">✏️</button>
+                                    <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Fumi Dorado</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
+                <div class="navbar__logo">FD</div>
+                <div>
+                    <div class="navbar__title">Fumi Dorado</div>
+                    <div class="navbar__subtitle">Panel Admin</div>
+                </div>
+            </div>
+            <a href="/tipoServicio" class="sidebar__item">⚙️ Tipos de Servicio</a>
+            <a href="/ordenServicio" class="sidebar__item">📋 Órdenes de Servicio</a>
+            <a href="/producto" class="sidebar__item active">🧪 Productos</a>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+
+            <!-- Encabezado -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-header__title">Matriz de Rotación de Productos</h2>
+                    <p class="page-header__subtitle">Programación de uso de productos por mes</p>
+                </div>
+                <button class="btn btn--primary">+ Registrar Producto</button>
+            </div>
+
+            <!-- Tabla -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Ingrediente Activo</th>
+                            <th>Concentración</th>
+                            <th>Tipo</th>
+                            <th>Meses de Uso</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% productos.forEach(producto => { %>
+                        <tr>
+                            <td>
+                                <div><%= producto.nombre %></div>
+                                <small class="text-muted"><%= producto.descripcion %></small>
+                            </td>
+                            <td><%= producto.ingredienteActivo %></td>
+                            <td><%= producto.concentracion %></td>
+                            <td>
+                                <% if(producto.tipoProducto === 'Insecticida') { %>
+                                    <span class="badge badge--insecticida">Insecticida</span>
+                                <% } else { %>
+                                    <span class="badge badge--rodenticida">Rodenticida</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                    <% producto.mesesUso.forEach(mes => { %>
+                                        <span class="badge badge--gold"><%= mes %></span>
+                                    <% }) %>
+                                </div>
+                            </td>
+                            <td>
+                                <% if(producto.estado === 'Activo') { %>
+                                    <span class="badge badge--success">Activo</span>
+                                <% } else { %>
+                                    <span class="badge badge--error">Inactivo</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-icon btn-icon--view" title="Ver">👁️</button>
+                                    <button class="btn-icon" title="Editar">✏️</button>
+                                    <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>
