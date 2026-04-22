@@ -13,6 +13,50 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", appRouter);
 
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/login', (req, res) => {
+  res.render('usuario/login');
+});
+
+app.get('/dashboard/tecnico', (req, res) => {
+  res.render('usuario/dashboards/tecnico');
+});
+
+app.get('/dashboard/admin', (req, res) => {
+  res.render('usuario/dashboards/admin');
+});
+
+app.get('/dashboard/cliente', (req, res) => {
+  res.render('usuario/dashboards/cliente');
+});
+
+app.get('/usuario/logout', (req, res) => {
+  res.redirect('/login');
+});
+
+
+app.post('/usuario/login', (req, res) => {
+  const { role } = req.body;
+
+  if (!role) return res.redirect('/login');
+
+  if (role === 'admin') {
+    return res.redirect('/dashboard/admin');
+  }
+
+  if (role === 'tecnico') {
+    return res.redirect('/dashboard/tecnico');
+  }
+
+  if (role === 'cliente') {
+    return res.redirect('/dashboard/cliente');
+  }
+
+  res.redirect('/login');
+});
+
+
 app.listen(port, () => {
   console.log(`Server running 🚀 at http://localhost:${port}`);
 });

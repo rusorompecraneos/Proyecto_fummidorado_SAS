@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fumi Dorado S.A.S — Panel del Técnico</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar__brand">
+    <div class="navbar__logo">FD</div>
+    <div>
+      <div class="navbar__title">Fumi Dorado S.A.S</div>
+      <div class="navbar__subtitle">Panel del técnico</div>
+    </div>
+  </div>
+  <div class="navbar__actions">
+    <a href="/usuario/perfil" class="btn btn--secondary btn--sm">
+      <i class="fa-regular fa-user"></i>
+      Tecnico
+    </a>
+    <a href="/usuario/logout" class="btn btn--ghost btn--sm">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Salir
+    </a>
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<main class="main-content" style="margin-left:0; padding: var(--space-10) var(--space-12);">
+
+  <h2 style="font-family:var(--font-display); font-weight:var(--weight-semi); margin-bottom: var(--space-8);">
+    Bienvenido Técnico
+  </h2>
+
+  <!-- Fila 1: 3 módulos -->
+  <div class="modules-grid" style="margin-bottom: var(--space-5);">
+
+    <!-- Servicios -->
+    <a href="/servicio/tecnico" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Servicios</div>
+        <div class="card__subtitle">Gestionar servicios asignados</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-clipboard-list"></i>
+      </div>
+    </a>
+
+    <!-- Mapa -->
+    <a href="/tecnico/mapa" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Mapa</div>
+        <div class="card__subtitle">Vizualizacion geografica</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-map"></i>
+      </div>
+    </a>
+
+    <!-- HDS y FT -->
+    <a href="/documentoTecnico/hds" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">HDS y FT</div>
+        <div class="card__subtitle">Documentos tecnicos</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-file"></i>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Fila 2: 2 módulos -->
+  <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-5); max-width: calc(66.66% - var(--space-3));">
+
+    <!-- Resumen de servicios -->
+    <a href="/tecnico/resumen" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Resumen de servicios</div>
+        <div class="card__subtitle">Resumen del dia</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-regular fa-calendar-days"></i>
+      </div>
+    </a>
+
+    <!-- Diagramas UPC -->
+    <a href="/documentoTecnico/upc" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Diagramas UPC</div>
+        <div class="card__subtitle">Vizualizar diagramas</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-chart-column"></i>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+</body>
+</html>

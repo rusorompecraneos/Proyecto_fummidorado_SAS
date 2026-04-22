@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fumi Dorado S.A.S — Panel de Administración</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar__brand">
+    <div class="navbar__logo">FD</div>
+    <div>
+      <div class="navbar__title">Fumi Dorado S.A.S</div>
+      <div class="navbar__subtitle">Panel de Administración</div>
+    </div>
+  </div>
+  <div class="navbar__actions">
+    <a href="/usuario/perfil" class="btn btn--secondary btn--sm">
+      <i class="fa-regular fa-user"></i>
+      Admin Principal
+    </a>
+    <a href="/usuario/logout" class="btn btn--ghost btn--sm">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Salir
+    </a>
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<main class="main-content" style="margin-left:0; padding: var(--space-10) var(--space-12);">
+
+  <h2 style="font-family:var(--font-display); font-weight:var(--weight-semi); margin-bottom: var(--space-8);">
+    Módulos del Sistema
+  </h2>
+
+  <div class="modules-grid">
+
+    <!-- Gestión de Servicios -->
+    <a href="/tipoServicio" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Gestión de Servicios</div>
+        <div class="card__subtitle">Administrar servicios y órdenes</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-clipboard-list"></i>
+      </div>
+    </a>
+
+    <!-- Clientes -->
+    <a href="/cliente" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Clientes</div>
+        <div class="card__subtitle">Base de datos de clientes</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-circle-user"></i>
+      </div>
+    </a>
+
+    <!-- Usuarios -->
+    <a href="/usuario" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Usuarios</div>
+        <div class="card__subtitle">Técnicos y personal</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-users"></i>
+      </div>
+    </a>
+
+    <!-- Productos -->
+    <a href="/producto" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Productos</div>
+        <div class="card__subtitle">Matriz de rotación</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-boxes-stacked"></i>
+      </div>
+    </a>
+
+    <!-- Reportes -->
+    <a href="/reporte" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Reportes</div>
+        <div class="card__subtitle">Estadísticas y análisis</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-chart-column"></i>
+      </div>
+    </a>
+
+    <!-- Diagramas UPC, HDS y FT -->
+    <a href="/documento" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Diagramas UPC<br/>HDS y FT</div>
+        <div class="card__subtitle">Cargar Diagramas / HDS y FT</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-file-lines"></i>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+</body>
+</html>
