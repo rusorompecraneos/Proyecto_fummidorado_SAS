@@ -8,6 +8,7 @@ import { listarFormularios, verFormulario, editarFormulario, guardarFormulario }
 
 const router = Router();
 
+// Ruta principal
 router.get('/', (req, res) => {
     if (!req.session.user) return res.redirect('/login');
     res.redirect(`/dashboard/${req.session.user.rol}`);
@@ -67,3 +68,4 @@ router.post('/formulario/:id/editar',
 );
 
 export default router;
+
