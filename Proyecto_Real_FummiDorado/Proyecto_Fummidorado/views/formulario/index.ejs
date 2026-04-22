@@ -1,81 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formularios - Fumi Dorado</title>
-    <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formularios - Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="layout">
+<div class="layout">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
-                <div class="navbar__logo">FD</div>
-                <div>
-                    <div class="navbar__title">Fumi Dorado</div>
-                    <div class="navbar__subtitle">Panel Admin</div>
-                </div>
-            </div>
-            <a href="/tipoServicio" class="sidebar__item">⚙️ Tipos de Servicio</a>
-            <a href="/ordenServicio" class="sidebar__item">📋 Órdenes de Servicio</a>
-            <a href="/formulario" class="sidebar__item active">📝 Formularios</a>
-            <a href="/producto" class="sidebar__item">🧪 Productos</a>
-        </aside>
+  <%- include('../partials/sidebar.ejs', { currentPage: 'formulario' }) %>
 
-        <!-- Contenido principal -->
-        <main class="main-content">
+  <main class="main-content <%= user.rol !== 'admin' ? 'main-content--full' : '' %>">
 
-            <!-- Encabezado -->
-            <div class="page-header">
-                <div>
-                    <h2 class="page-header__title">Formularios de Servicio</h2>
-                    <p class="page-header__subtitle">Consulta los formularios diligenciados por los técnicos</p>
-                </div>
-            </div>
+    <!-- Navbar para técnico/cliente (sin sidebar) -->
+    <%- include('../partials/navbar.ejs') %>
 
-            <!-- Tabla -->
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>OS</th>
-                            <th>Cliente</th>
-                            <th>Sede</th>
-                            <th>Técnico</th>
-                            <th>Fecha</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% formularios.forEach(formulario => { %>
-                        <tr>
-                            <td class="text-gold"><%= formulario.codigoOs %></td>
-                            <td><%= formulario.nombreCliente %></td>
-                            <td><%= formulario.nombreSede %></td>
-                            <td><%= formulario.nombreTecnico %></td>
-                            <td><%= formulario.fechaServicio %></td>
-                            <td>
-                                <% if(formulario.estado === 'Finalizado') { %>
-                                    <span class="badge badge--finalizado">Finalizado</span>
-                                <% } else { %>
-                                    <span class="badge badge--proceso">En proceso</span>
-                                <% } %>
-                            </td>
-                            <td>
-                                <div class="table-actions">
-                                    <a href="/formulario/<%= formulario.idFormulario %>" class="btn-icon btn-icon--view" title="Ver">👁️</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
+    <!-- Flecha volver al dashboard -->
+    <a href="/dashboard/<%= user.rol %>" class="auth-back-link" style="margin-bottom: var(--space-4);">
+      ← Volver al dashboard
+    </a>
 
-        </main>
+    <!-- Encabezado -->
+    <div class="page-header">
+      <div>
+        <h2 class="page-header__title">
+          <% if (user.rol === 'cliente') { %>
+            Documentos de Servicio
+          <% } else if (user.rol === 'tecnico') { %>
+            Mis Formularios
+          <% } else { %>
+            Formularios de Servicio
+          <% } %>
+        </h2>
+        <p class="page-header__subtitle">
+          <% if (user.rol === 'cliente') { %>
+            Consulta los documentos generados para tus servicios
+          <% } else if (user.rol === 'tecnico') { %>
+            Formularios de tus órdenes asignadas
+          <% } else { %>
+            Consulta los formularios diligenciados por los técnicos
+          <% } %>
+        </p>
+      </div>
     </div>
+
+    <!-- Tabla -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>OS</th>
+            <% if (user.rol !== 'cliente') { %>
+              <th>Cliente</th>
+              <th>Sede</th>
+            <% } %>
+            <% if (user.rol !== 'tecnico') { %>
+              <th>Técnico</th>
+            <% } %>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% formularios.forEach(formulario => { %>
+          <tr>
+            <td class="text-gold"><%= formulario.codigoOs %></td>
+            <% if (user.rol !== 'cliente') { %>
+              <td><%= formulario.nombreCliente %></td>
+              <td><%= formulario.nombreSede %></td>
+            <% } %>
+            <% if (user.rol !== 'tecnico') { %>
+              <td><%= formulario.nombreTecnico %></td>
+            <% } %>
+            <td><%= formulario.fechaServicio %></td>
+            <td>
+              <% if (formulario.estado === 'Finalizado') { %>
+                <span class="badge badge--finalizado">Finalizado</span>
+              <% } else { %>
+                <span class="badge badge--proceso">En proceso</span>
+              <% } %>
+            </td>
+            <td>
+              <div class="table-actions">
+                <!-- Ver documento: todos pueden -->
+                <a href="/formulario/<%= formulario.idFormulario %>" class="btn-icon btn-icon--view" title="Ver">👁️</a>
+                <!-- Editar: solo técnico y admin -->
+                <% if (user.rol === 'tecnico' || user.rol === 'admin') { %>
+                  <a href="/formulario/<%= formulario.idFormulario %>/editar" class="btn-icon" title="Editar">✏️</a>
+                <% } %>
+                <!-- Eliminar: solo admin -->
+                <% if (user.rol === 'admin') { %>
+                  <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
 </body>
 </html>

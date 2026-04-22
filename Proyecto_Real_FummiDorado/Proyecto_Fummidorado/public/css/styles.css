@@ -2120,3 +2120,9 @@ body {
   h1 { font-size: var(--text-2xl); }
   h2 { font-size: var(--text-xl); }
 }
+
+/* Sin sidebar: técnico y cliente */
+.main-content--full {
+  margin-left: 0;
+}
+
