@@ -1,6 +1,7 @@
 import express from 'express';
 import { join, resolve } from "path";
 
+
 import appRouter from "./routes/router.js";
 
 const app = express();
@@ -13,7 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", appRouter);
 
-app.use(express.urlencoded({ extended: true }));
 
 app.get('/login', (req, res) => {
   res.render('usuario/login');
@@ -34,6 +34,20 @@ app.get('/dashboard/cliente', (req, res) => {
 app.get('/usuario/logout', (req, res) => {
   res.redirect('/login');
 });
+
+app.get('/usuario/perfil/cliente', (req, res) => {
+    res.render('usuario/perfil/perfil_cliente');
+});
+
+app.get('/usuario/perfil/tecnico', (req, res) => {
+    res.render('usuario/perfil/perfil_tecnico');
+});
+
+app.get('/usuario/perfil/admin', (req, res) => {
+  res.render('usuario/perfil/perfil_admin');
+});
+
+
 
 
 app.post('/usuario/login', (req, res) => {
