@@ -1,4 +1,6 @@
 import express from 'express';
+import { join, resolve } from "path";
+
 import session from 'express-session';
 import { join } from "path";
 
@@ -30,6 +32,9 @@ app.use((req, res, next) => {
 // ── Rutas de la app ───────────────────────────────────────────
 app.use("/", appRouter);
 
+
+app.get('/login', (req, res) => {
+  res.render('usuario/login');
 // ── Login / Logout ────────────────────────────────────────────
 app.get('/login', verLogin);
 app.post('/usuario/login', procesarLogin);
@@ -47,6 +52,48 @@ app.get('/dashboard/tecnico', (req, res) => {
 });
 
 app.get('/dashboard/cliente', (req, res) => {
+  res.render('usuario/dashboards/cliente');
+});
+
+app.get('/usuario/logout', (req, res) => {
+  res.redirect('/login');
+});
+
+app.get('/usuario/perfil/cliente', (req, res) => {
+    res.render('usuario/perfil/perfil_cliente');
+});
+
+app.get('/usuario/perfil/tecnico', (req, res) => {
+    res.render('usuario/perfil/perfil_tecnico');
+});
+
+app.get('/usuario/perfil/admin', (req, res) => {
+  res.render('usuario/perfil/perfil_admin');
+});
+
+
+
+
+app.post('/usuario/login', (req, res) => {
+  const { role } = req.body;
+
+  if (!role) return res.redirect('/login');
+
+  if (role === 'admin') {
+    return res.redirect('/dashboard/admin');
+  }
+
+  if (role === 'tecnico') {
+    return res.redirect('/dashboard/tecnico');
+  }
+
+  if (role === 'cliente') {
+    return res.redirect('/dashboard/cliente');
+  }
+
+  res.redirect('/login');
+});
+
     if (!req.session.user || req.session.user.rol !== 'cliente') return res.redirect('/login');
     res.render('Usuario/dashboards/cliente');
 });
