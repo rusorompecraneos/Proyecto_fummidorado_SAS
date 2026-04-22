@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fumi Dorado S.A.S — Portal del Cliente</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar__brand">
+    <div class="navbar__logo">FD</div>
+    <div>
+      <div class="navbar__title">Fumi Dorado S.A.S</div>
+      <div class="navbar__subtitle">Portal del Cliente</div>
+    </div>
+  </div>
+  <div class="navbar__actions">
+    <a href="/usuario/perfil" class="btn btn--secondary btn--sm">
+      <i class="fa-regular fa-user"></i>
+      Cliente
+    </a>
+    <a href="/usuario/logout" class="btn btn--ghost btn--sm">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Salir
+    </a>
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<main class="main-content" style="margin-left:0; padding: var(--space-10) var(--space-12);">
+
+  <div style="margin-bottom: var(--space-8);">
+    <h2 style="font-family:var(--font-display); font-weight:var(--weight-semi); color:var(--color-text);">
+      Bienvenido Juan Perez
+    </h2>
+    <p style="margin:0; color:var(--color-text-muted); font-size:var(--text-sm);">
+      Gestione sus servicios y acceda a su documentación
+    </p>
+  </div>
+
+  <!-- Fila 1: 3 módulos -->
+  <div class="modules-grid" style="margin-bottom: var(--space-5);">
+
+    <!-- Servicios Completados -->
+    <a href="/cliente/servicios-completados" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Servicios Completados</div>
+        <div class="card__subtitle">Ver historial Completo</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+    </a>
+
+    <!-- Próximo Servicio -->
+    <a href="/cliente/proximos-servicios" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Próximo Servicio</div>
+        <div class="card__subtitle">
+          <%
+            const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            const now = new Date();
+          %>
+          <%= meses[now.getMonth()] %> <%= now.getFullYear() %>
+        </div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-regular fa-calendar-days"></i>
+      </div>
+    </a>
+
+    <!-- Documentos -->
+    <a href="/documento/cliente" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Documentos</div>
+        <div class="card__subtitle">Certificados e informes</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-file-circle-check"></i>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Fila 2: 3 módulos -->
+  <div class="modules-grid">
+
+    <!-- HDS y FT -->
+    <a href="/documentoTecnico/hds" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">HDS y FT</div>
+        <div class="card__subtitle">Documentos técnicos</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-file"></i>
+      </div>
+    </a>
+
+    <!-- Diagramas UPC -->
+    <a href="/documentoTecnico/upc" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Diagramas UPC</div>
+        <div class="card__subtitle">Puntos de control</div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-file"></i>
+      </div>
+    </a>
+
+    <!-- Programa -->
+    <a href="/cliente/programa" class="card card--module" style="text-decoration:none;">
+      <div>
+        <div class="card__title">Programa</div>
+        <div class="card__subtitle">
+          <% if (typeof programaSecciones !== 'undefined') { %>
+            <%= programaSecciones %> Secciones Disponibles
+          <% } else { %>
+            Información del programa
+          <% } %>
+        </div>
+      </div>
+      <div class="card__icon" style="margin-top:var(--space-6); width:60px; height:60px; font-size:26px; border-radius:var(--radius-full);">
+        <i class="fa-solid fa-folder-open"></i>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+</body>
+</html>
+
