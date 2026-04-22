@@ -4,13 +4,13 @@ import { listarProductos } from "../controllers/productoController.js";
 import { listarOrdenes, verOrden } from "../controllers/ordenServicioController.js";
 import { listarFormularios, verFormulario, editarFormulario, guardarFormulario } from "../controllers/formularioController.js";
 
-
 const router = Router();
 
+// Ruta principal
 router.get('/', (request, response) => {
     response.render('index', {
         message: 'Hello'
-    })
+    });
 });
 
 // Rutas de Tipo de Servicio
