@@ -1,0 +1,22 @@
+<!-- views/partials/_navbar.ejs -->
+<!-- Barra superior para técnico y cliente (sin sidebar) -->
+<% if (user && user.rol !== 'admin') { %>
+<nav class="navbar">
+  <div class="navbar__brand">
+    <div class="navbar__logo">FD</div>
+    <div>
+      <div class="navbar__title">Fumi Dorado</div>
+      <div class="navbar__subtitle">
+        <% if (user.rol === 'tecnico') { %>Panel Técnico<% } %>
+        <% if (user.rol === 'cliente') { %>Panel Cliente<% } %>
+      </div>
+    </div>
+  </div>
+  <div class="navbar__actions">
+    <span style="font-size: var(--text-sm); color: var(--color-text-muted);">
+      👤 <%= user.nombre %>
+    </span>
+    <a href="/usuario/logout" class="btn btn--ghost btn--sm">Cerrar sesión</a>
+  </div>
+</nav>
+<% } %>

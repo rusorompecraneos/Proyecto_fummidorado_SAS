@@ -1,77 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tipos de Servicio - Fumi Dorado</title>
-    <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tipos de Servicio - Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="layout">
+<div class="layout">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
-                <div class="navbar__logo">FD</div>
-                <div>
-                    <div class="navbar__title">Fumi Dorado</div>
-                    <div class="navbar__subtitle">Panel Admin</div>
-                </div>
-            </div>
-            <a href="/tipoServicio" class="sidebar__item active">⚙️ Tipos de Servicio</a>
-            <a href="/ordenServicio" class="sidebar__item">📋 Órdenes de Servicio</a>
-            <a href="/producto" class="sidebar__item">🧪 Productos</a>
-        </aside>
+  <%- include('../partials/sidebar.ejs', { currentPage: 'tipoServicio' }) %>
 
-        <!-- Contenido principal -->
-        <main class="main-content">
+  <main class="main-content">
 
-            <!-- Encabezado -->
-            <div class="page-header">
-                <div>
-                    <h2 class="page-header__title">Tipos de Servicio</h2>
-                    <p class="page-header__subtitle">Administra los tipos de servicio del sistema</p>
-                </div>
-                <button class="btn btn--primary">+ Registrar Tipo</button>
-            </div>
+    <!-- Flecha volver al dashboard -->
+    <a href="/dashboard/<%= user.rol %>" class="auth-back-link" style="margin-bottom: var(--space-4);">
+      ← Volver al dashboard
+    </a>
 
-            <!-- Tabla -->
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% tiposServicio.forEach(tipo => { %>
-                        <tr>
-                            <td><%= tipo.nombre %></td>
-                            <td><%= tipo.descripcion %></td>
-                            <td>
-                                <% if(tipo.estado === 'Activo') { %>
-                                    <span class="badge badge--success">Activo</span>
-                                <% } else { %>
-                                    <span class="badge badge--error">Inactivo</span>
-                                <% } %>
-                            </td>
-                            <td>
-                                <div class="table-actions">
-                                    <button class="btn-icon btn-icon--view" title="Ver">👁️</button>
-                                    <button class="btn-icon" title="Editar">✏️</button>
-                                    <button class="btn-icon btn-icon--danger" title="Inactivar">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
+    <!-- Encabezado -->
+    <div class="page-header">
+      <div>
+        <h2 class="page-header__title">Tipos de Servicio</h2>
+        <p class="page-header__subtitle">Administra los tipos de servicio del sistema</p>
+      </div>
+      <!-- Solo admin puede registrar -->
+      <% if (user.rol === 'admin') { %>
+        <button class="btn btn--primary">+ Registrar Tipo</button>
+      <% } %>
     </div>
+
+    <!-- Tabla -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <% if (user.rol === 'admin') { %>
+              <th>Acciones</th>
+            <% } %>
+          </tr>
+        </thead>
+        <tbody>
+          <% tiposServicio.forEach(tipo => { %>
+          <tr>
+            <td><%= tipo.nombre %></td>
+            <td><%= tipo.descripcion %></td>
+            <td>
+              <% if (tipo.estado === 'Activo') { %>
+                <span class="badge badge--success">Activo</span>
+              <% } else { %>
+                <span class="badge badge--error">Inactivo</span>
+              <% } %>
+            </td>
+            <% if (user.rol === 'admin') { %>
+            <td>
+              <div class="table-actions">
+                <button class="btn-icon btn-icon--view" title="Ver">👁️</button>
+                <button class="btn-icon" title="Editar">✏️</button>
+                <button class="btn-icon btn-icon--danger" title="Inactivar">🗑️</button>
+              </div>
+            </td>
+            <% } %>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
 </body>
 </html>

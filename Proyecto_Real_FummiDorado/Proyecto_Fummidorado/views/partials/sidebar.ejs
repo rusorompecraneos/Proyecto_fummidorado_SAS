@@ -1,0 +1,24 @@
+<!-- views/partials/_sidebar.ejs -->
+<!-- Solo se renderiza si el usuario es admin -->
+<% if (user && user.rol === 'admin') { %>
+<aside class="sidebar">
+  <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
+    <div class="navbar__logo">FD</div>
+    <div>
+      <div class="navbar__title">Fumi Dorado</div>
+      <div class="navbar__subtitle">Panel Admin</div>
+    </div>
+  </div>
+  <a href="/tipoServicio"  class="sidebar__item <%= currentPage === 'tipoServicio'  ? 'active' : '' %>">⚙️ Tipos de Servicio</a>
+  <a href="/ordenServicio" class="sidebar__item <%= currentPage === 'ordenServicio' ? 'active' : '' %>">📋 Órdenes de Servicio</a>
+  <a href="/formulario"   class="sidebar__item <%= currentPage === 'formulario'    ? 'active' : '' %>">📝 Formularios</a>
+  <a href="/producto"     class="sidebar__item <%= currentPage === 'producto'      ? 'active' : '' %>">🧪 Productos</a>
+
+  <!-- Spacer al fondo -->
+  <div style="margin-top: auto; padding: var(--space-5);">
+    <a href="/usuario/logout" class="btn btn--ghost btn--sm" style="width:100%; justify-content:center;">
+      🚪 Cerrar sesión
+    </a>
+  </div>
+</aside>
+<% } %>

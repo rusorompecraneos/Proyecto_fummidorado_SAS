@@ -7,233 +7,227 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="layout">
+<div class="layout">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="navbar__brand" style="padding: 0 var(--space-5); margin-bottom: var(--space-6);">
-                <div class="navbar__logo">FD</div>
-                <div>
-                    <div class="navbar__title">Fumi Dorado</div>
-                    <div class="navbar__subtitle">Panel Admin</div>
-                </div>
+    <%- include('../partials/sidebar.ejs', { currentPage: 'formulario' }) %>
+
+    <main class="main-content <%= user.rol !== 'admin' ? 'main-content--full' : '' %>">
+
+        <%- include('../partials/navbar.ejs') %>
+
+        <!-- Flecha volver al dashboard -->
+        <a href="/dashboard/<%= user.rol %>" class="auth-back-link" style="margin-bottom: var(--space-4);">
+            ← Volver al dashboard
+        </a>
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <div>
+                <a href="/formulario/<%= formulario.idFormulario %>" class="page-header__back">← Volver al formulario</a>
+                <h2 class="page-header__title">Formulario <%= formulario.codigoOs %></h2>
+                <p class="page-header__subtitle">Diligencia la información del servicio</p>
             </div>
-            <a href="/tipoServicio" class="sidebar__item">⚙️ Tipos de Servicio</a>
-            <a href="/ordenServicio" class="sidebar__item">📋 Órdenes de Servicio</a>
-            <a href="/formulario" class="sidebar__item active">📝 Formularios</a>
-            <a href="/producto" class="sidebar__item">🧪 Productos</a>
-        </aside>
+        </div>
 
-        <!-- Contenido principal -->
-        <main class="main-content">
+        <form action="/formulario/<%= formulario.idFormulario %>/editar" method="POST" class="step-form">
 
-            <!-- Encabezado -->
-            <div class="page-header">
-                <div>
-                    <a href="/formulario/<%= formulario.idFormulario %>" class="page-header__back">← Volver</a>
-                    <h2 class="page-header__title">Formulario <%= formulario.codigoOs %></h2>
-                    <p class="page-header__subtitle">Diligencia la información del servicio</p>
+            <!-- Sección 1: Datos Generales -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">1</div>
+                    <div class="step-section__title">Datos Generales</div>
                 </div>
-            </div>
-
-            <form action="/formulario/<%= formulario.idFormulario %>/editar" method="POST" class="step-form">
-
-                <!-- Sección 1: Datos Generales -->
-                <div class="step-section">
-                    <div class="step-section__header">
-                        <div class="step-number">1</div>
-                        <div class="step-section__title">Datos Generales</div>
-                    </div>
-                    <div class="step-section__body">
-                        <div class="grid grid-2">
-                            <div class="form-group">
-                                <label class="form-label">OS</label>
-                                <input type="text" class="form-control" value="<%= formulario.codigoOs %>" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Cliente</label>
-                                <input type="text" class="form-control" value="<%= formulario.nombreCliente %>" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Sede</label>
-                                <input type="text" class="form-control" value="<%= formulario.nombreSede %>" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Dirección</label>
-                                <input type="text" class="form-control" value="<%= formulario.direccionSede %>" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Técnico</label>
-                                <input type="text" class="form-control" value="<%= formulario.nombreTecnico %>" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Fecha del Servicio</label>
-                                <input type="text" class="form-control" value="<%= formulario.fechaServicio %>" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Frecuencia *</label>
-                                <select name="frecuencia" class="form-control">
-                                    <option value="">Seleccione frecuencia</option>
-                                    <% ['Semanal','Quincenal','Mensual','Bimestral','Trimestral','Semestral','Anual'].forEach(f => { %>
-                                        <option value="<%= f %>" <%= formulario.frecuencia === f ? 'selected' : '' %>><%= f %></option>
-                                    <% }) %>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Hora de Llegada *</label>
-                                <input type="time" name="horaLlegada" class="form-control" value="<%= formulario.horaLlegada %>">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Hora de Inicio *</label>
-                                <input type="time" name="horaInicio" class="form-control" value="<%= formulario.horaInicio %>">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Hora de Terminación *</label>
-                                <input type="time" name="horaTerminacion" class="form-control" value="<%= formulario.horaTerminacion %>">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección 2: Diagnóstico e Inspección -->
-                <div class="step-section">
-                    <div class="step-section__header">
-                        <div class="step-number">2</div>
-                        <div class="step-section__title">Diagnóstico e Inspección</div>
-                    </div>
-                    <div class="step-section__body">
-                        <div class="grid grid-2">
-                            <% ['techo','paredes','pisos','ventanas','puertas','iluminacion','ventilacion','drenajes'].forEach(item => { %>
-                            <div class="form-group">
-                                <label class="form-label"><%= item.charAt(0).toUpperCase() + item.slice(1) %> *</label>
-                                <select name="<%= item %>" class="form-control">
-                                    <option value="Adecuado" <%= formulario[item] === 'Adecuado' ? 'selected' : '' %>>Adecuado</option>
-                                    <option value="No adecuado" <%= formulario[item] === 'No adecuado' ? 'selected' : '' %>>No adecuado</option>
-                                </select>
-                            </div>
-                            <% }) %>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección 3: Control de Áreas -->
-                <div class="step-section">
-                    <div class="step-section__header">
-                        <div class="step-number">3</div>
-                        <div class="step-section__title">Control de Áreas</div>
-                    </div>
-                    <div class="step-section__body">
-                        <div class="checkbox-grid">
-                            <% ['Cocina','Habitaciones','Baños','Área común','Almacén','Exterior'].forEach(area => { %>
-                            <label class="checkbox-grid-item">
-                                <input type="checkbox" name="areasControl" value="<%= area %>"
-                                    <%= formulario.areasControl.includes(area) ? 'checked' : '' %>>
-                                <span class="checkbox-grid-label"><%= area %></span>
-                            </label>
-                            <% }) %>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección 4: Tipos y Métodos -->
-                <div class="step-section">
-                    <div class="step-section__header">
-                        <div class="step-number">4</div>
-                        <div class="step-section__title">Tipo y Método de Control</div>
-                    </div>
-                    <div class="step-section__body">
-                        <div class="grid grid-2">
-                            <div class="form-group">
-                                <label class="form-label">Tipos de Control *</label>
-                                <div class="checkbox-grid">
-                                    <% ['Desinsectación','Control de roedores','Desinfección / Sanitización'].forEach(tipo => { %>
-                                    <label class="checkbox-grid-item">
-                                        <input type="checkbox" name="tiposControl" value="<%= tipo %>"
-                                            <%= formulario.tiposControl.includes(tipo) ? 'checked' : '' %>>
-                                        <span class="checkbox-grid-label"><%= tipo %></span>
-                                    </label>
-                                    <% }) %>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Métodos *</label>
-                                <div class="checkbox-grid">
-                                    <% ['Aspirado','Vaporización','Pegamentos','Cebo suelto','Estación cebadera','Aspersión','Nebulización'].forEach(metodo => { %>
-                                    <label class="checkbox-grid-item">
-                                        <input type="checkbox" name="metodosControl" value="<%= metodo %>"
-                                            <%= formulario.metodosControl.includes(metodo) ? 'checked' : '' %>>
-                                        <span class="checkbox-grid-label"><%= metodo %></span>
-                                    </label>
-                                    <% }) %>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección 5: Plagas -->
-                <div class="step-section">
-                    <div class="step-section__header">
-                        <div class="step-number">5</div>
-                        <div class="step-section__title">Inspección del Servicio</div>
-                    </div>
-                    <div class="step-section__body">
-                        <div class="checkbox-grid">
-                            <% ['Cucarachas','Roedores','Hormigas','Moscas','Mosquitos','Chinches','No hay presencia'].forEach(plaga => { %>
-                            <label class="checkbox-grid-item">
-                                <input type="checkbox" name="plagasEncontradas" value="<%= plaga %>"
-                                    <%= formulario.plagasEncontradas.includes(plaga) ? 'checked' : '' %>>
-                                <span class="checkbox-grid-label"><%= plaga %></span>
-                            </label>
-                            <% }) %>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección 6: Condiciones -->
-                <div class="step-section">
-                    <div class="step-section__header">
-                        <div class="step-number">6</div>
-                        <div class="step-section__title">Condiciones del Lugar</div>
-                    </div>
-                    <div class="step-section__body">
-                        <div class="grid grid-3">
-                            <% [['higieneLugar','Higiene'],['instalaciones','Instalaciones'],['estructura','Estructura']].forEach(([campo, label]) => { %>
-                            <div class="form-group">
-                                <label class="form-label"><%= label %> *</label>
-                                <select name="<%= campo %>" class="form-control">
-                                    <% ['Excelente','Bueno','Regular','Malo'].forEach(op => { %>
-                                        <option value="<%= op %>" <%= formulario[campo] === op ? 'selected' : '' %>><%= op %></option>
-                                    <% }) %>
-                                </select>
-                            </div>
-                            <% }) %>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección 9: Observaciones -->
-                <div class="step-section">
-                    <div class="step-section__header">
-                        <div class="step-number">9</div>
-                        <div class="step-section__title">Observaciones Generales</div>
-                    </div>
-                    <div class="step-section__body">
+                <div class="step-section__body">
+                    <div class="grid grid-2">
                         <div class="form-group">
-                            <textarea name="observacionesGenerales" class="form-control" rows="4" placeholder="Observaciones generales del servicio..."><%= formulario.observacionesGenerales %></textarea>
+                            <label class="form-label">OS</label>
+                            <input type="text" class="form-control" value="<%= formulario.codigoOs %>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cliente</label>
+                            <input type="text" class="form-control" value="<%= formulario.nombreCliente %>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sede</label>
+                            <input type="text" class="form-control" value="<%= formulario.nombreSede %>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" class="form-control" value="<%= formulario.direccionSede %>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Técnico</label>
+                            <input type="text" class="form-control" value="<%= formulario.nombreTecnico %>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha del Servicio</label>
+                            <input type="text" class="form-control" value="<%= formulario.fechaServicio %>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Frecuencia *</label>
+                            <select name="frecuencia" class="form-control">
+                                <option value="">Seleccione frecuencia</option>
+                                <% ['Semanal','Quincenal','Mensual','Bimestral','Trimestral','Semestral','Anual'].forEach(f => { %>
+                                    <option value="<%= f %>" <%= formulario.frecuencia === f ? 'selected' : '' %>><%= f %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora de Llegada *</label>
+                            <input type="time" name="horaLlegada" class="form-control" value="<%= formulario.horaLlegada %>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora de Inicio *</label>
+                            <input type="time" name="horaInicio" class="form-control" value="<%= formulario.horaInicio %>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora de Terminación *</label>
+                            <input type="time" name="horaTerminacion" class="form-control" value="<%= formulario.horaTerminacion %>">
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Botones -->
-                <div class="flex" style="justify-content: flex-end; gap: var(--space-3);">
-                    <a href="/formulario/<%= formulario.idFormulario %>" class="btn btn--secondary">Cancelar</a>
-                    <button type="submit" class="btn btn--primary">💾 Guardar Cambios</button>
+            <!-- Sección 2: Diagnóstico e Inspección -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">2</div>
+                    <div class="step-section__title">Diagnóstico e Inspección</div>
                 </div>
+                <div class="step-section__body">
+                    <div class="grid grid-2">
+                        <% ['techo','paredes','pisos','ventanas','puertas','iluminacion','ventilacion','drenajes'].forEach(item => { %>
+                        <div class="form-group">
+                            <label class="form-label"><%= item.charAt(0).toUpperCase() + item.slice(1) %> *</label>
+                            <select name="<%= item %>" class="form-control">
+                                <option value="Adecuado" <%= formulario[item] === 'Adecuado' ? 'selected' : '' %>>Adecuado</option>
+                                <option value="No adecuado" <%= formulario[item] === 'No adecuado' ? 'selected' : '' %>>No adecuado</option>
+                            </select>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
 
-            </form>
+            <!-- Sección 3: Control de Áreas -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">3</div>
+                    <div class="step-section__title">Control de Áreas</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="checkbox-grid">
+                        <% ['Cocina','Habitaciones','Baños','Área común','Almacén','Exterior'].forEach(area => { %>
+                        <label class="checkbox-grid-item">
+                            <input type="checkbox" name="areasControl" value="<%= area %>"
+                                <%= formulario.areasControl.includes(area) ? 'checked' : '' %>>
+                            <span class="checkbox-grid-label"><%= area %></span>
+                        </label>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
 
-        </main>
-    </div>
+            <!-- Sección 4: Tipos y Métodos -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">4</div>
+                    <div class="step-section__title">Tipo y Método de Control</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Tipos de Control *</label>
+                            <div class="checkbox-grid">
+                                <% ['Desinsectación','Control de roedores','Desinfección / Sanitización'].forEach(tipo => { %>
+                                <label class="checkbox-grid-item">
+                                    <input type="checkbox" name="tiposControl" value="<%= tipo %>"
+                                        <%= formulario.tiposControl.includes(tipo) ? 'checked' : '' %>>
+                                    <span class="checkbox-grid-label"><%= tipo %></span>
+                                </label>
+                                <% }) %>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Métodos *</label>
+                            <div class="checkbox-grid">
+                                <% ['Aspirado','Vaporización','Pegamentos','Cebo suelto','Estación cebadera','Aspersión','Nebulización'].forEach(metodo => { %>
+                                <label class="checkbox-grid-item">
+                                    <input type="checkbox" name="metodosControl" value="<%= metodo %>"
+                                        <%= formulario.metodosControl.includes(metodo) ? 'checked' : '' %>>
+                                    <span class="checkbox-grid-label"><%= metodo %></span>
+                                </label>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 5: Plagas -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">5</div>
+                    <div class="step-section__title">Inspección del Servicio</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="checkbox-grid">
+                        <% ['Cucarachas','Roedores','Hormigas','Moscas','Mosquitos','Chinches','No hay presencia'].forEach(plaga => { %>
+                        <label class="checkbox-grid-item">
+                            <input type="checkbox" name="plagasEncontradas" value="<%= plaga %>"
+                                <%= formulario.plagasEncontradas.includes(plaga) ? 'checked' : '' %>>
+                            <span class="checkbox-grid-label"><%= plaga %></span>
+                        </label>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 6: Condiciones -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">6</div>
+                    <div class="step-section__title">Condiciones del Lugar</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="grid grid-3">
+                        <% [['higieneLugar','Higiene'],['instalaciones','Instalaciones'],['estructura','Estructura']].forEach(([campo, label]) => { %>
+                        <div class="form-group">
+                            <label class="form-label"><%= label %> *</label>
+                            <select name="<%= campo %>" class="form-control">
+                                <% ['Excelente','Bueno','Regular','Malo'].forEach(op => { %>
+                                    <option value="<%= op %>" <%= formulario[campo] === op ? 'selected' : '' %>><%= op %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 9: Observaciones -->
+            <div class="step-section">
+                <div class="step-section__header">
+                    <div class="step-number">9</div>
+                    <div class="step-section__title">Observaciones Generales</div>
+                </div>
+                <div class="step-section__body">
+                    <div class="form-group">
+                        <textarea name="observacionesGenerales" class="form-control" rows="4"
+                            placeholder="Observaciones generales del servicio..."><%= formulario.observacionesGenerales %></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex" style="justify-content: flex-end; gap: var(--space-3);">
+                <a href="/formulario/<%= formulario.idFormulario %>" class="btn btn--secondary">Cancelar</a>
+                <button type="submit" class="btn btn--primary">💾 Guardar Cambios</button>
+            </div>
+
+        </form>
+
+    </main>
+</div>
 </body>
 </html>
