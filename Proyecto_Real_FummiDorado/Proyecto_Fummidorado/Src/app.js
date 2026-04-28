@@ -1,7 +1,6 @@
 import express from 'express';
 import { join, resolve } from "path";
-
-
+import passwordRoutes from './routes/password.routes.js';
 import appRouter from "./routes/router.js";
 
 const app = express();
@@ -10,7 +9,8 @@ app.set("view engine", 'ejs');
 app.set("views", "views")
 app.use(express.static(join("./public")))
 app.use(express.urlencoded({ extended: true }));
-	
+
+app.use('/password', passwordRoutes);
 
 app.use("/", appRouter);
 
