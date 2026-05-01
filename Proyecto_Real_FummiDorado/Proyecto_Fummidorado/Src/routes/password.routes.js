@@ -12,4 +12,6 @@ router.post('/verificar',     passwordController.irANuevaPassword);
 router.get('/nueva-password', passwordController.mostrarNuevaPassword);
 router.post('/nueva-password',passwordController.irALogin);
 
+router.get('/confirmacion', passwordController.mostrarConfirmacion);
+
 export default router;
