@@ -4,6 +4,7 @@ import { listarProductos } from "../controllers/productoController.js";
 import { listarOrdenes, verOrden } from "../controllers/ordenServicioController.js";
 import { listarFormularios, verFormulario, editarFormulario, guardarFormulario } from "../controllers/formularioController.js";
 
+
 const router = Router();
 
 // Ruta principal
@@ -26,6 +27,7 @@ router.get('/formulario', listarFormularios);
 router.get('/formulario/:id', verFormulario);
 router.get('/formulario/:id/editar', editarFormulario);
 router.post('/formulario/:id/editar', guardarFormulario);
+
 
 export default router;
 

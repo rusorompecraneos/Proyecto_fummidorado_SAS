@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HDS y FT – Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="auth-page" style="align-items: flex-start; padding: var(--space-8);">
+
+    <!-- HEADER -->
+    <div style="width: 100%; max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-8);">
+
+      <div class="page-header" style="border-bottom: 2px solid var(--color-gold); padding-bottom: var(--space-5);">
+        <div>
+          <a href="javascript:history.back()" class="page-header__back">← </a>
+          <h1 class="page-header__title">HDS y FT</h1>
+          <p class="page-header__subtitle">Documentación técnica de productos utilizados</p>
+        </div>
+      </div>
+
+      <!-- BUSCADOR -->
+      <div class="card" style="padding: var(--space-4);">
+        <div class="search-bar">
+          <span class="search-bar__icon">🔍</span>
+          <input type="text" id="buscador" placeholder="Buscar HDS / FT" oninput="filtrar()" />
+        </div>
+      </div>
+
+      <!-- GRID DE DOCUMENTOS -->
+      <div class="grid grid-3" id="lista-documentos">
+
+        <!-- Documento 1 — HDS -->
+        <div class="diagram-card documento" data-nombre="K-Othrine SC 62.5">
+          <div class="diagram-card__header">
+            <div class="diagram-card__file-icon">📄</div>
+            <div>
+              <div class="diagram-card__name">K-Othrine SC 62.5</div>
+              <span class="badge badge--hds">HDS</span>
+            </div>
+          </div>
+          <div class="diagram-card__meta">I.A.: Deltametrina</div>
+          <div class="diagram-card__date">Última actualización: &nbsp;<strong>14/01/2026</strong></div>
+          <div class="diagram-card__actions">
+            <!-- Reemplaza el href="#" por la ruta del PDF cuando lo tengas -->
+            <!-- Opción local: href="/documentos/k-othrine-hds.pdf" -->
+            <!-- Opción nube:  href con variable de BD, se conecta cuando esté lista>" -->
+            <a href="#" download class="btn btn--primary w-full">
+              ⬇ Descargar PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- Documento 2 — FT -->
+        <div class="diagram-card documento" data-nombre="Klerat">
+          <div class="diagram-card__header">
+            <div class="diagram-card__file-icon">📄</div>
+            <div>
+              <div class="diagram-card__name">Klerat</div>
+              <span class="badge badge--ft">FT</span>
+            </div>
+          </div>
+          <div class="diagram-card__meta">I.A.: Brodifacum</div>
+          <div class="diagram-card__date">Última actualización: &nbsp;<strong>31/01/2026</strong></div>
+          <div class="diagram-card__actions">
+            <a href="#" download class="btn btn--primary w-full">
+              ⬇ Descargar PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- Documento 3 — HDS -->
+        <div class="diagram-card documento" data-nombre="Storm">
+          <div class="diagram-card__header">
+            <div class="diagram-card__file-icon">📄</div>
+            <div>
+              <div class="diagram-card__name">Storm</div>
+              <span class="badge badge--hds">HDS</span>
+            </div>
+          </div>
+          <div class="diagram-card__meta">I.A.: Flocoumafen</div>
+          <div class="diagram-card__date">Última actualización: &nbsp;<strong>04/02/2026</strong></div>
+          <div class="diagram-card__actions">
+            <a href="#" download class="btn btn--primary w-full">
+              ⬇ Descargar PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- Cuando tengas más documentos, agrégalos aquí con la misma estructura -->
+
+      </div>
+
+      <!-- MENSAJE SIN RESULTADOS -->
+      <p class="text-muted text-center hidden" id="sin-resultados">
+        No se encontraron documentos con ese nombre.
+      </p>
+
+      <!-- INFO BOX -->
+      <div class="info-box">
+        <div class="info-box__header">
+          📋 Información Importante
+        </div>
+        <ul class="info-box__list">
+          <li>Las Hojas de Seguridad (HDS) contienen información sobre manejo seguro, primeros auxilios y medidas de emergencia.</li>
+          <li>Las Fichas Técnicas (FT) detallan las características, aplicaciones y dosificaciones de cada producto.</li>
+          <li>Todos los documentos se actualizan periódicamente según normativa vigente.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function filtrar() {
+      const busqueda = document.getElementById('buscador').value.toLowerCase();
+      const documentos = document.querySelectorAll('.documento');
+      let visibles = 0;
+
+      documentos.forEach(doc => {
+        const nombre = doc.getAttribute('data-nombre').toLowerCase();
+        if (nombre.includes(busqueda)) {
+          doc.style.display = '';
+          visibles++;
+        } else {
+          doc.style.display = 'none';
+        }
+      });
+
+      document.getElementById('sin-resultados').classList.toggle('hidden', visibles > 0);
+    }
+  </script>
+</body>
+</html>

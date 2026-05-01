@@ -2,6 +2,10 @@ import express from 'express';
 import { join, resolve } from "path";
 import passwordRoutes from './routes/password.routes.js';
 import appRouter from "./routes/router.js";
+import clienteRoutes from './routes/cliente.routes.js';
+import tecnicoRoutes from './routes/tecnico.routes.js';
+
+
 
 const app = express();
 const port = 3000;
@@ -9,6 +13,10 @@ app.set("view engine", 'ejs');
 app.set("views", "views")
 app.use(express.static(join("./public")))
 app.use(express.urlencoded({ extended: true }));
+
+// Diagramas UPC y Hds-ft
+app.use('/documentosTecnicoCliente', clienteRoutes);
+app.use('/documentosTecnicoCliente', tecnicoRoutes);
 
 app.use('/password', passwordRoutes);
 
@@ -46,6 +54,7 @@ app.get('/usuario/perfil/tecnico', (req, res) => {
 app.get('/usuario/perfil/admin', (req, res) => {
   res.render('usuario/perfil/perfil_admin');
 });
+
 
 
 

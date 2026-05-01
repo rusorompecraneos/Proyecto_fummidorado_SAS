@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagramas UPC – Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="auth-page" style="align-items: flex-start; padding: var(--space-8);">
+
+    <div style="width: 100%; max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-8);">
+
+      <!-- HEADER -->
+     <div style="padding-bottom: var(--space-5); border-bottom: 2px solid var(--color-gold);">
+        <a href="javascript:history.back()" class="page-header__back" style="margin-bottom: var(--space-3); display: inline-flex;">
+            <span style="font-size: 1.3rem; margin-right: var(--space-2);">←</span> Volver
+        </a>
+        <h1 class="page-header__title">DIAGRAMAS UPC</h1>
+        <p class="page-header__subtitle">Documentación técnica de productos utilizados</p>
+     </div>
+
+      <!-- BUSCADOR -->
+      <div class="card" style="padding: var(--space-4);">
+        <div class="search-bar">
+          <span class="search-bar__icon">🔍</span>
+          <input type="text" id="buscador" placeholder="Buscar Diagramas" oninput="filtrar()" />
+        </div>
+      </div>
+
+      <!-- GRID DE DIAGRAMAS -->
+      <div class="grid grid-3" id="lista-diagramas">
+
+        <!-- Diagrama 1 -->
+        <div class="diagram-card diagrama" data-nombre="Áreas Comunes">
+          <div class="diagram-card__header">
+            <div class="diagram-card__file-icon">📄</div>
+            <div>
+              <div class="diagram-card__name">Áreas Comunes</div>
+              <span class="badge badge--upc">Hoteles</span>
+            </div>
+          </div>
+          <div class="diagram-card__meta">
+            Diagrama de ubicación de puntos de control para áreas comunes
+          </div>
+          <div class="diagram-card__date">Fecha: &nbsp;<strong>4/4/2026</strong></div>
+          <div class="diagram-card__actions">
+            <!-- Reemplaza href="#" por la ruta real cuando tengas el archivo -->
+            <a href="#" download class="btn btn--primary w-full">
+              ⬇ Descargar
+            </a>
+          </div>
+        </div>
+
+        <!-- Diagrama 2 -->
+        <div class="diagram-card diagrama" data-nombre="Habitaciones">
+          <div class="diagram-card__header">
+            <div class="diagram-card__file-icon">📄</div>
+            <div>
+              <div class="diagram-card__name">Habitaciones</div>
+              <span class="badge badge--upc">Hoteles</span>
+            </div>
+          </div>
+          <div class="diagram-card__meta">
+            Diagrama de puntos de control
+          </div>
+          <div class="diagram-card__date">Fecha: &nbsp;<strong>19/3/2026</strong></div>
+          <div class="diagram-card__actions">
+            <a href="#" download class="btn btn--primary w-full">
+              ⬇ Descargar
+            </a>
+          </div>
+        </div>
+
+        <!-- Diagrama 3 -->
+        <div class="diagram-card diagrama" data-nombre="Producir y Servir">
+          <div class="diagram-card__header">
+            <div class="diagram-card__file-icon">📄</div>
+            <div>
+              <div class="diagram-card__name">Producir y Servir</div>
+              <span class="badge badge--upc">Hoteles</span>
+            </div>
+          </div>
+          <div class="diagram-card__meta">
+            Diagrama de puntos de control
+          </div>
+          <div class="diagram-card__date">Fecha: &nbsp;<strong>19/4/2026</strong></div>
+          <div class="diagram-card__actions">
+            <a href="#" download class="btn btn--primary w-full">
+              ⬇ Descargar
+            </a>
+          </div>
+        </div>
+
+        <!-- Agrega más diagramas aquí con la misma estructura -->
+
+      </div>
+
+      <!-- MENSAJE SIN RESULTADOS -->
+      <p class="text-muted text-center hidden" id="sin-resultados">
+        No se encontraron diagramas con ese nombre.
+      </p>
+
+    </div>
+  </div>
+
+  <script>
+    function filtrar() {
+      const busqueda = document.getElementById('buscador').value.toLowerCase();
+      const diagramas = document.querySelectorAll('.diagrama');
+      let visibles = 0;
+
+      diagramas.forEach(d => {
+        const nombre = d.getAttribute('data-nombre').toLowerCase();
+        if (nombre.includes(busqueda)) {
+          d.style.display = '';
+          visibles++;
+        } else {
+          d.style.display = 'none';
+        }
+      });
+
+      document.getElementById('sin-resultados').classList.toggle('hidden', visibles > 0);
+    }
+  </script>
+</body>
+</html>
