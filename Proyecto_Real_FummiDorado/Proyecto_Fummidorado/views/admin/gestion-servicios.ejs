@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Servicios – Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div style="min-height:100vh; background:var(--color-bg); padding: var(--space-8);">
+
+    <!-- HEADER -->
+    <div style="padding-bottom: var(--space-5); border-bottom: 2px solid var(--color-gold); margin-bottom: var(--space-8);">
+      <a href="javascript:history.back()" class="page-header__back" style="margin-bottom: var(--space-3); display:inline-flex;">
+        <span style="font-size:1.3rem; margin-right:var(--space-2);">←</span> Volver
+      </a>
+      <h1 class="page-header__title">Gestión de Servicios</h1>
+      <p class="page-header__subtitle">Administra órdenes de servicio</p>
+    </div>
+
+    <div style="max-width: 1100px; margin: 0 auto; display:flex; flex-direction:column; gap: var(--space-6);">
+
+      <!-- BOTÓN CREAR -->
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="btn btn--primary" onclick="abrirModalCrear()">
+          + Crear Servicio
+        </button>
+      </div>
+
+      <!-- TABLA -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>OS</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Cliente</th>
+              <th>Sede</th>
+              <th>Técnico Asignado</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% servicios.forEach(s => { %>
+              <tr>
+                <td style="color: var(--color-gold); font-weight: var(--weight-semi);">
+                  <%= s.id %>
+                </td>
+                <td><%= s.fecha %></td>
+                <td><%= s.hora %></td>
+                <td><%= s.cliente %></td>
+                <td><%= s.sede %></td>
+                <td><%= s.tecnico %></td>
+                <td>
+                  <span class="badge
+                    <%= s.estado === 'Completado' || s.estado === 'Finalizado' ? 'badge--finalizado' :
+                        s.estado === 'Pendiente'  ? 'badge--ejecutar' :
+                        s.estado === 'En proceso' ? 'badge--proceso'  : 'badge--ejecutar' %>">
+                    <%= s.estado %>
+                  </span>
+                </td>
+                <td>
+                  <div class="table-actions">
+                    <a href="/admin/servicios/<%= s.id %>" class="btn-icon btn-icon--view" title="Ver detalle">👁</a>
+                    <button class="btn-icon" title="Editar" onclick="abrirModalEditar('<%= s.id %>', '<%= s.cliente %>', '<%= s.fecha %>', '<%= s.hora %>', '<%= s.sede %>', '<%= s.tecnico %>', '<%= s.tipo %>', '<%= s.estado %>')">✏️</button>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL CREAR SERVICIO
+  ════════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="modal-crear">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title">Crear Servicio</h3>
+        <button class="modal__close" onclick="cerrarModal('modal-crear')">✕</button>
+      </div>
+
+      <form action="/admin/servicios/crear" method="POST">
+        <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+
+          <div class="form-group">
+            <label class="form-label">Cliente</label>
+            <input class="form-control" type="text" name="cliente" placeholder="Nombre del cliente" />
+          </div>
+
+          <div class="grid grid-2" style="gap: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Fecha</label>
+              <input class="form-control" type="date" name="fecha" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hora</label>
+              <input class="form-control" type="time" name="hora" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Sede</label>
+            <input class="form-control" type="text" name="sede" placeholder="Sede del servicio" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Técnico Asignado</label>
+            <input class="form-control" type="text" name="tecnico" placeholder="Nombre del técnico" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tipo de Servicio</label>
+            <select class="form-control" name="tipo">
+              <option value="">Seleccionar tipo...</option>
+              <option value="Fumigacion Integral">Fumigación Integral</option>
+              <option value="Fumigacion Preventiva">Fumigación Preventiva</option>
+              <option value="Control de roedores">Control de Roedores</option>
+              <option value="Desinfección">Desinfección</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select class="form-control" name="estado">
+              <option value="Pendiente">Pendiente</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Completado">Completado</option>
+            </select>
+          </div>
+
+          <div style="display:flex; gap: var(--space-3); justify-content:flex-end; margin-top: var(--space-2);">
+            <button type="button" class="btn btn--ghost" onclick="cerrarModal('modal-crear')">Cancelar</button>
+            <button type="submit" class="btn btn--primary">Crear Servicio</button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL EDITAR SERVICIO
+  ════════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="modal-editar">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title">Editar Servicio</h3>
+        <button class="modal__close" onclick="cerrarModal('modal-editar')">✕</button>
+      </div>
+
+      <form action="/admin/servicios/editar" method="POST">
+        <input type="hidden" name="id" id="edit-id" />
+        <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+
+          <div class="form-group">
+            <label class="form-label">Cliente</label>
+            <input class="form-control" type="text" name="cliente" id="edit-cliente" />
+          </div>
+
+          <div class="grid grid-2" style="gap: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Fecha</label>
+              <input class="form-control" type="text" name="fecha" id="edit-fecha" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hora</label>
+              <input class="form-control" type="text" name="hora" id="edit-hora" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Sede</label>
+            <input class="form-control" type="text" name="sede" id="edit-sede" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Técnico Asignado</label>
+            <input class="form-control" type="text" name="tecnico" id="edit-tecnico" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tipo de Servicio</label>
+            <input class="form-control" type="text" name="tipo" id="edit-tipo" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select class="form-control" name="estado" id="edit-estado">
+              <option value="Pendiente">Pendiente</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Completado">Completado</option>
+            </select>
+          </div>
+
+          <div style="display:flex; gap: var(--space-3); justify-content:flex-end; margin-top: var(--space-2);">
+            <button type="button" class="btn btn--ghost" onclick="cerrarModal('modal-editar')">Cancelar</button>
+            <button type="submit" class="btn btn--primary">Guardar Cambios</button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function abrirModalCrear() {
+      document.getElementById('modal-crear').classList.remove('hidden');
+    }
+
+    function abrirModalEditar(id, cliente, fecha, hora, sede, tecnico, tipo, estado) {
+      document.getElementById('edit-id').value      = id;
+      document.getElementById('edit-cliente').value = cliente;
+      document.getElementById('edit-fecha').value   = fecha;
+      document.getElementById('edit-hora').value    = hora;
+      document.getElementById('edit-sede').value    = sede;
+      document.getElementById('edit-tecnico').value = tecnico;
+      document.getElementById('edit-tipo').value    = tipo;
+      document.getElementById('edit-estado').value  = estado;
+      document.getElementById('modal-editar').classList.remove('hidden');
+    }
+
+    function cerrarModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // Cerrar modal al hacer click fuera
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.add('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
+

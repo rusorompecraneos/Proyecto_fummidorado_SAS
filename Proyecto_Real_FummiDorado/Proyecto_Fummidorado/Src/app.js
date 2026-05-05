@@ -4,6 +4,8 @@ import passwordRoutes from './routes/password.routes.js';
 import appRouter from "./routes/router.js";
 import clienteRoutes from './routes/cliente.routes.js';
 import tecnicoRoutes from './routes/tecnico.routes.js';
+import adminRoutes from './routes/admin.routes.js';
+
 
 
 
@@ -13,6 +15,9 @@ app.set("view engine", 'ejs');
 app.set("views", "views")
 app.use(express.static(join("./public")))
 app.use(express.urlencoded({ extended: true }));
+
+// Gestion de servicios, admin. 
+app.use('/admin', adminRoutes);
 
 // Diagramas UPC y Hds-ft
 app.use('/documentosTecnicoCliente', clienteRoutes);

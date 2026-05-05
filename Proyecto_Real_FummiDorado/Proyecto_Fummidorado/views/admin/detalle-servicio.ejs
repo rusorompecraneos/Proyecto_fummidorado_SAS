@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle Servicio – Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div style="min-height:100vh; background:var(--color-bg); padding: var(--space-8);">
+
+    <div style="max-width: 800px; margin: 0 auto; display:flex; flex-direction:column; gap: var(--space-8);">
+
+      <!-- HEADER -->
+      <div style="padding-bottom: var(--space-5); border-bottom: 2px solid var(--color-gold);">
+        <a href="javascript:history.back()" class="page-header__back" style="margin-bottom: var(--space-3); display:inline-flex;">
+          <span style="font-size:1.3rem; margin-right:var(--space-2);">←</span> Volver
+        </a>
+        <h1 class="page-header__title">Detalle del Servicio</h1>
+        <p class="page-header__subtitle">SVR-<%= servicio.id %></p>
+      </div>
+
+      <!-- CARD DETALLE -->
+      <div class="order-detail">
+        <div class="order-detail__header">
+          <span class="order-detail__id">SVR-<%= servicio.id %></span>
+          <span class="badge
+            <%= servicio.estado === 'Completado' || servicio.estado === 'Finalizado' ? 'badge--finalizado' :
+                servicio.estado === 'Pendiente'  ? 'badge--ejecutar' :
+                servicio.estado === 'En proceso' ? 'badge--proceso'  : 'badge--ejecutar' %>">
+            <%= servicio.estado %>
+          </span>
+        </div>
+
+        <div class="order-detail__grid">
+          <div class="order-detail__field">
+            <div class="order-detail__field-label">
+              <span class="icon">👤</span> Cliente
+            </div>
+            <div class="order-detail__field-value"><%= servicio.cliente %></div>
+          </div>
+
+          <div class="order-detail__field">
+            <div class="order-detail__field-label">
+              <span class="icon">📍</span> Sede
+            </div>
+            <div class="order-detail__field-value"><%= servicio.sede %></div>
+          </div>
+
+          <div class="order-detail__field">
+            <div class="order-detail__field-label">
+              <span class="icon">📅</span> Fecha
+            </div>
+            <div class="order-detail__field-value"><%= servicio.fecha %></div>
+          </div>
+
+          <div class="order-detail__field">
+            <div class="order-detail__field-label">
+              <span class="icon">🕐</span> Hora
+            </div>
+            <div class="order-detail__field-value"><%= servicio.hora %></div>
+          </div>
+
+          <div class="order-detail__field">
+            <div class="order-detail__field-label">
+              <span class="icon">🔧</span> Técnico Asignado
+            </div>
+            <div class="order-detail__field-value"><%= servicio.tecnico %></div>
+          </div>
+
+          <div class="order-detail__field">
+            <div class="order-detail__field-label">
+              <span class="icon">🧪</span> Tipo de Servicio
+            </div>
+            <div class="order-detail__field-value"><%= servicio.tipo %></div>
+          </div>
+
+          <div class="order-detail__field order-detail__field--full">
+            <div class="order-detail__field-label">
+              <span class="icon">📍</span> Dirección
+            </div>
+            <div class="order-detail__field-value"><%= servicio.direccion %></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
