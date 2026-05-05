@@ -16,8 +16,10 @@
     "ejs": "^5.0.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "jest": "^30.3.0",
     "mysql": "^2.18.1",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
   },
   "directories": {
     "test": "test"
