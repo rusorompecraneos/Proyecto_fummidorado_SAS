@@ -6,10 +6,10 @@ const mostrarDiagramasUpc = (req, res) => res.render('documentosTecnicoCliente/d
 
 
 // Servicios de hoy del tecnico. 
-const mostrarServiciosHoy = (req, res) => {
+ /* const mostrarServiciosHoy = (req, res) => {
   const servicios    = serviciosService.obtenerServiciosHoy();
   const estadisticas = serviciosService.obtenerEstadisticas();
   res.render('tecnico/servicios-hoy', { servicios, estadisticas });
 };
 
-export default { mostrarServiciosHoy, mostrarHdsFt, mostrarDiagramasUpc };
+export default { mostrarServiciosHoy, mostrarHdsFt, mostrarDiagramasUpc };  */

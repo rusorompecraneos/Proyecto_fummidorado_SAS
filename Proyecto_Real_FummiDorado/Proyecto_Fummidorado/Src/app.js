@@ -17,7 +17,7 @@ app.use(express.static(join("./public")))
 app.use(express.urlencoded({ extended: true }));
 
 // Gestion de servicios, admin. 
-app.use('/admin', adminRoutes);
+// app.use('/admin', adminRoutes);
 
 // Diagramas UPC y Hds-ft
 app.use('/documentosTecnicoCliente', clienteRoutes);

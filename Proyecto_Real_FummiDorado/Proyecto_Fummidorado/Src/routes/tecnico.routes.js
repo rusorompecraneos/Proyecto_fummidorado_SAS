@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.get('/hds-ft',        tecnicoController.mostrarHdsFt);
 router.get('/diagramas-upc', tecnicoController.mostrarDiagramasUpc);
-router.get('/servicios-hoy', tecnicoController.mostrarServiciosHoy);
+// router.get('/servicios-hoy', tecnicoController.mostrarServiciosHoy);
 
 export default router;
