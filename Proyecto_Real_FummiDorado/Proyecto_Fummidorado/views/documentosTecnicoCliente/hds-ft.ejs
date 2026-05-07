@@ -7,107 +7,112 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <div class="auth-page" style="align-items: flex-start; padding: var(--space-8);">
+  <div style="min-height:100vh; background:var(--color-bg); padding: var(--space-8);">
+    <div style="max-width: 960px; margin: 0 auto; display:flex; flex-direction:column; gap: var(--space-8);">
 
-    <!-- HEADER -->
-    <div style="width: 100%; max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-8);">
-
-      <div class="page-header" style="border-bottom: 2px solid var(--color-gold); padding-bottom: var(--space-5);">
-        <div>
-          <a href="javascript:history.back()" class="page-header__back">← </a>
-          <h1 class="page-header__title">HDS y FT</h1>
-          <p class="page-header__subtitle">Documentación técnica de productos utilizados</p>
-        </div>
+      <!-- HEADER -->
+      <div style="padding-bottom: var(--space-5); border-bottom: 2px solid var(--color-gold);">
+        <a href="javascript:history.back()" class="page-header__back" style="margin-bottom: var(--space-3); display:inline-flex;">
+          <span style="font-size:1.3rem; margin-right:var(--space-2);">←</span> Volver
+        </a>
+        <h1 class="page-header__title">HDS y FT</h1>
+        <p class="page-header__subtitle">
+          <% if (rol === 'admin') { %>Gestionar HDS y FT<% } else { %>Documentación técnica de productos utilizados<% } %>
+        </p>
       </div>
 
-      <!-- BUSCADOR -->
-      <div class="card" style="padding: var(--space-4);">
-        <div class="search-bar">
-          <span class="search-bar__icon">🔍</span>
-          <input type="text" id="buscador" placeholder="Buscar HDS / FT" oninput="filtrar()" />
+      <!-- BUSCADOR + BOTÓN ADMIN -->
+      <div style="display:flex; align-items:center; gap: var(--space-4);">
+        <div class="card" style="padding: var(--space-4); flex:1;">
+          <div class="search-bar">
+            <span class="search-bar__icon">🔍</span>
+            <input type="text" id="buscador" placeholder="Buscar HDS / FT" oninput="filtrar()" />
+          </div>
         </div>
+        <% if (rol === 'admin') { %>
+          <button class="btn btn--primary" style="white-space:nowrap; height:fit-content;">
+            + Cargar Nuevo Documento
+          </button>
+        <% } %>
       </div>
 
       <!-- GRID DE DOCUMENTOS -->
       <div class="grid grid-3" id="lista-documentos">
 
-        <!-- Documento 1 — HDS -->
         <div class="diagram-card documento" data-nombre="K-Othrine SC 62.5">
           <div class="diagram-card__header">
             <div class="diagram-card__file-icon">📄</div>
             <div>
-              <div class="diagram-card__name">K-Othrine SC 62.5</div>
+              <div class="diagram-card__name">CITROSAN</div>
               <span class="badge badge--hds">HDS</span>
             </div>
           </div>
           <div class="diagram-card__meta">I.A.: Deltametrina</div>
-          <div class="diagram-card__date">Última actualización: &nbsp;<strong>14/01/2026</strong></div>
-          <div class="diagram-card__actions">
-            <!-- Reemplaza el href="#" por la ruta del PDF cuando lo tengas -->
-            <!-- Opción local: href="/documentos/k-othrine-hds.pdf" -->
-            <!-- Opción nube:  href con variable de BD, se conecta cuando esté lista>" -->
-            <a href="#" download class="btn btn--primary w-full">
-              ⬇ Descargar PDF
-            </a>
+          <div class="diagram-card__date">Última actualización: <strong>14/01/2026</strong></div>
+          <div class="diagram-card__actions" style="display:flex; gap: var(--space-2); flex-wrap:wrap;">
+            <a href="/documentos/_HDS_CITROSAN.pdf" download class="btn btn--primary" style="flex:1;">⬇ Descargar PDF</a>
+            <% if (rol === 'admin') { %>
+              <button class="btn-icon" title="Editar">✏️</button>
+              <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
+            <% } %>
           </div>
         </div>
 
-        <!-- Documento 2 — FT -->
         <div class="diagram-card documento" data-nombre="Klerat">
           <div class="diagram-card__header">
             <div class="diagram-card__file-icon">📄</div>
             <div>
-              <div class="diagram-card__name">Klerat</div>
+              <div class="diagram-card__name">CITROSAN</div>
               <span class="badge badge--ft">FT</span>
             </div>
           </div>
           <div class="diagram-card__meta">I.A.: Brodifacum</div>
-          <div class="diagram-card__date">Última actualización: &nbsp;<strong>31/01/2026</strong></div>
-          <div class="diagram-card__actions">
-            <a href="#" download class="btn btn--primary w-full">
-              ⬇ Descargar PDF
-            </a>
+          <div class="diagram-card__date">Última actualización: <strong>31/01/2026</strong></div>
+          <div class="diagram-card__actions" style="display:flex; gap: var(--space-2); flex-wrap:wrap;">
+            <a href="/documentos/FT_CITROSAN.pdf" download class="btn btn--primary" style="flex:1;">⬇ Descargar PDF</a>
+            <% if (rol === 'admin') { %>
+              <button class="btn-icon" title="Editar">✏️</button>
+              <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
+            <% } %>
           </div>
         </div>
 
-        <!-- Documento 3 — HDS -->
         <div class="diagram-card documento" data-nombre="Storm">
           <div class="diagram-card__header">
             <div class="diagram-card__file-icon">📄</div>
             <div>
-              <div class="diagram-card__name">Storm</div>
+              <div class="diagram-card__name">SIPERTRIN</div>
               <span class="badge badge--hds">HDS</span>
             </div>
           </div>
           <div class="diagram-card__meta">I.A.: Flocoumafen</div>
-          <div class="diagram-card__date">Última actualización: &nbsp;<strong>04/02/2026</strong></div>
-          <div class="diagram-card__actions">
-            <a href="#" download class="btn btn--primary w-full">
-              ⬇ Descargar PDF
-            </a>
+          <div class="diagram-card__date">Última actualización: <strong>04/02/2026</strong></div>
+          <div class="diagram-card__actions" style="display:flex; gap: var(--space-2); flex-wrap:wrap;">
+            <a href="documentos/HDS_SIPERTRIN.pdf" download class="btn btn--primary" style="flex:1;">⬇ Descargar PDF</a>
+            <% if (rol === 'admin') { %>
+              <button class="btn-icon" title="Editar">✏️</button>
+              <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
+            <% } %>
           </div>
         </div>
 
-        <!-- Cuando tengas más documentos, agrégalos aquí con la misma estructura -->
-
       </div>
 
-      <!-- MENSAJE SIN RESULTADOS -->
       <p class="text-muted text-center hidden" id="sin-resultados">
         No se encontraron documentos con ese nombre.
       </p>
 
-      <!-- INFO BOX -->
-      <div class="info-box">
-        <div class="info-box__header">
-          📋 Información Importante
+      <!-- INFO BOX solo para cliente y tecnico -->
+      <% if (rol !== 'admin') { %>
+        <div class="info-box">
+          <div class="info-box__header">📋 Información Importante</div>
+          <ul class="info-box__list">
+            <li>Las Hojas de Seguridad (HDS) contienen información sobre manejo seguro, primeros auxilios y medidas de emergencia.</li>
+            <li>Las Fichas Técnicas (FT) detallan las características, aplicaciones y dosificaciones de cada producto.</li>
+            <li>Todos los documentos se actualizan periódicamente según normativa vigente.</li>
+          </ul>
         </div>
-        <ul class="info-box__list">
-          <li>Las Hojas de Seguridad (HDS) contienen información sobre manejo seguro, primeros auxilios y medidas de emergencia.</li>
-          <li>Las Fichas Técnicas (FT) detallan las características, aplicaciones y dosificaciones de cada producto.</li>
-          <li>Todos los documentos se actualizan periódicamente según normativa vigente.</li>
-        </ul>
-      </div>
+      <% } %>
 
     </div>
   </div>
@@ -117,17 +122,11 @@
       const busqueda = document.getElementById('buscador').value.toLowerCase();
       const documentos = document.querySelectorAll('.documento');
       let visibles = 0;
-
-      documentos.forEach(doc => {
+      documentos.forEach(function(doc) {
         const nombre = doc.getAttribute('data-nombre').toLowerCase();
-        if (nombre.includes(busqueda)) {
-          doc.style.display = '';
-          visibles++;
-        } else {
-          doc.style.display = 'none';
-        }
+        if (nombre.includes(busqueda)) { doc.style.display = ''; visibles++; }
+        else { doc.style.display = 'none'; }
       });
-
       document.getElementById('sin-resultados').classList.toggle('hidden', visibles > 0);
     }
   </script>

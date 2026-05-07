@@ -11,5 +11,22 @@ const mostrarDetalleServicio = (req, res) => {
   res.render('admin/detalle-servicio', { servicio });
 };
 
-export default { mostrarGestionServicios, mostrarDetalleServicio };
+const mostrarSelectorDocumentos = (req, res) => {
+  res.render('admin/documentos-selector');
+};
 
+const mostrarHdsFt = (req, res) => {
+  res.render('documentosTecnicoCliente/hds-ft', { rol: 'admin' });
+};
+
+const mostrarDiagramasUpc = (req, res) => {
+  res.render('documentosTecnicoCliente/diagramas-upc', { rol: 'admin' });
+};
+
+export default {
+  mostrarGestionServicios,
+  mostrarDetalleServicio,
+  mostrarSelectorDocumentos,
+  mostrarHdsFt,
+  mostrarDiagramasUpc
+};
