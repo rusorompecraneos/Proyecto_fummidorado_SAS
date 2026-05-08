@@ -11,4 +11,6 @@ const router = express.Router();
 router.get('/hds-ft',        clienteController.mostrarHdsFt);
 router.get('/diagramas-upc', clienteController.mostrarDiagramasUpc);
 
+router.get('/programa', clienteController.mostrarPrograma);
+
 export default router;

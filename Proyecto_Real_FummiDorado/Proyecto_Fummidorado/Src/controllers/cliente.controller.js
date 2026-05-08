@@ -2,6 +2,7 @@
 
 const mostrarHdsFt        = (req, res) => res.render('documentosTecnicoCliente/hds-ft', { rol: 'cliente' });
 const mostrarDiagramasUpc = (req, res) => res.render('documentosTecnicoCliente/diagramas-upc', { rol: 'cliente' });
+const mostrarPrograma = (req, res) => res.render('Usuario/cliente/programa', { rol: 'cliente' });
 
+export default { mostrarHdsFt, mostrarDiagramasUpc, mostrarPrograma };
 
-export default { mostrarHdsFt, mostrarDiagramasUpc };

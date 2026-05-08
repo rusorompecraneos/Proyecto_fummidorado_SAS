@@ -21,6 +21,7 @@ app.use('/admin', adminRoutes);
 
 // Diagramas UPC y Hds-ft
 app.use('/documentosTecnicoCliente', clienteRoutes);
+app.use('/Usuario/cliente', clienteRoutes);
 app.use('/documentosTecnicoCliente', tecnicoRoutes);
 
 app.use('/password', passwordRoutes);
