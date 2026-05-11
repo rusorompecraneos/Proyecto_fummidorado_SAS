@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Clientes – Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div style="min-height:100vh; background:var(--color-bg); padding: var(--space-8);">
+  <div style="max-width: 1100px; margin: 0 auto; display:flex; flex-direction:column; gap: var(--space-6);">
+
+    <!-- HEADER -->
+    <div style="padding-bottom: var(--space-5); border-bottom: 2px solid var(--color-gold);">
+      <a href="/dashboard/admin" class="page-header__back" style="margin-bottom: var(--space-3); display:inline-flex;">
+        <span style="font-size:1.3rem; margin-right:var(--space-2);">←</span> Volver
+      </a>
+      <h1 class="page-header__title">Gestión de Clientes</h1>
+      <p class="page-header__subtitle">Administra clientes y sus sedes</p>
+    </div>
+
+    <!-- ERRORES BACKEND -->
+    <% if (typeof errores !== 'undefined' && errores.length > 0) { %>
+      <div class="alert alert--error">
+        <div>
+          <% errores.forEach(function(e) { %>
+            <div>⚠ <%= e %></div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- BOTÓN REGISTRAR -->
+    <div style="display:flex; justify-content:flex-end;">
+      <button class="btn btn--primary" onclick="abrirModalCrear()">
+        + Registrar Cliente
+      </button>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>NIT</th>
+            <th>Contacto</th>
+            <th>Dirección</th>
+            <th>Sedes</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% clientes.forEach(function(c) { %>
+            <tr>
+              <td><%= c.nombre %></td>
+              <td><%= c.nit %></td>
+              <td><%= c.contacto %></td>
+              <td><%= c.direccion %></td>
+              <td>
+                <span class="badge badge--gold"><%= c.sedes %> sede<%= c.sedes !== 1 ? 's' : '' %></span>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <button class="btn-icon btn-icon--view" title="Ver"
+                    onclick="abrirModalVer('<%= c.id %>', '<%= c.nombre %>', '<%= c.nit %>', '<%= c.contacto %>', '<%= c.telefono %>', '<%= c.correo %>', '<%= c.direccion %>', '<%= c.sede %>')">
+                    👁
+                  </button>
+                  <button class="btn-icon" title="Editar"
+                    onclick="abrirModalEditar('<%= c.id %>', '<%= c.nombre %>', '<%= c.nit %>', '<%= c.contacto %>', '<%= c.telefono %>', '<%= c.correo %>', '<%= c.direccion %>', '<%= c.sede %>')">
+                    ✏️
+                  </button>
+                  <button class="btn-icon btn-icon--danger" title="Eliminar"
+                    onclick="abrirModalEliminar('<%= c.id %>', '<%= c.nombre %>')">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL CREAR
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-crear">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 class="modal__title">Registrar Nuevo Cliente</h3>
+      <button class="modal__close" onclick="cerrarModal('modal-crear')">✕</button>
+    </div>
+    <form action="/admin/gestion-clientes/crear" method="POST">
+      <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+
+        <div class="grid grid-2" style="gap: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label">Nombre del Cliente</label>
+            <input class="form-control" type="text" name="nombre" placeholder="Nombre del cliente" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">NIT / Identificación</label>
+            <input class="form-control" type="text" name="nit" placeholder="900123456-7" />
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="gap: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label">Contacto Principal</label>
+            <input class="form-control" type="text" name="contacto" placeholder="Nombre del contacto" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-control" type="tel" name="telefono" placeholder="3001234567" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Correo Electrónico</label>
+          <input class="form-control" type="email" name="correo" placeholder="correo@empresa.com" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dirección Principal</label>
+          <input class="form-control" type="text" name="direccion" placeholder="Calle 72 #10-34, Bogotá" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nombre de la sede</label>
+          <input class="form-control" type="text" name="sede" placeholder="Sede Principal" />
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--lg">Registrar Cliente</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL VER
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-ver">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 class="modal__title">Detalle del Cliente</h3>
+      <button class="modal__close" onclick="cerrarModal('modal-ver')">✕</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+      <div style="display:flex; align-items:center; gap: var(--space-3);">
+        <div class="client-detail__logo">🏢</div>
+        <div>
+          <div class="client-detail__name" id="ver-nombre"></div>
+          <div class="client-detail__nit" id="ver-nit"></div>
+        </div>
+      </div>
+      <div class="grid grid-2" style="gap: var(--space-3);">
+        <div class="profile-row">
+          <div>
+            <div class="profile-row__label">Contacto</div>
+            <div class="profile-row__value" id="ver-contacto"></div>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div>
+            <div class="profile-row__label">Teléfono</div>
+            <div class="profile-row__value" id="ver-telefono"></div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-row">
+        <div>
+          <div class="profile-row__label">Correo</div>
+          <div class="profile-row__value" id="ver-correo"></div>
+        </div>
+      </div>
+      <div>
+        <div class="client-detail__section-title">📍 Sedes Registradas</div>
+        <div class="client-detail__sede" id="ver-sede"></div>
+      </div>
+      <button class="btn btn--primary btn--lg" onclick="cerrarModal('modal-ver')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL EDITAR
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-editar">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 class="modal__title">Editar Cliente</h3>
+      <button class="modal__close" onclick="cerrarModal('modal-editar')">✕</button>
+    </div>
+    <form action="/admin/gestion-clientes/editar" method="POST">
+      <input type="hidden" name="id" id="edit-id" />
+      <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+
+        <div class="grid grid-2" style="gap: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label">Nombre del Cliente</label>
+            <input class="form-control" type="text" name="nombre" id="edit-nombre" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">NIT / Identificación</label>
+            <input class="form-control" type="text" name="nit" id="edit-nit" />
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="gap: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label">Contacto Principal</label>
+            <input class="form-control" type="text" name="contacto" id="edit-contacto" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-control" type="tel" name="telefono" id="edit-telefono" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Correo Electrónico</label>
+          <input class="form-control" type="email" name="correo" id="edit-correo" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dirección Principal</label>
+          <input class="form-control" type="text" name="direccion" id="edit-direccion" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nombre de la sede</label>
+          <input class="form-control" type="text" name="sede" id="edit-sede" />
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--lg">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL ELIMINAR
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-eliminar">
+  <div class="modal" style="text-align:center;">
+    <div class="modal__header">
+      <h3 class="modal__title">Eliminar Cliente</h3>
+      <button class="modal__close" onclick="cerrarModal('modal-eliminar')">✕</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap: var(--space-6); align-items:center; padding: var(--space-4) 0;">
+      <div style="font-size:3rem;">🗑️</div>
+      <p style="color: var(--color-text-muted); margin:0;">
+        ¿Estás seguro de que deseas eliminar a <strong id="eliminar-nombre" style="color:var(--color-text);"></strong>? Esta acción no se puede deshacer.
+      </p>
+      <form action="/admin/gestion-clientes/eliminar" method="POST" style="width:100%;">
+        <input type="hidden" name="id" id="eliminar-id" />
+        <div style="display:flex; gap: var(--space-3);">
+          <button type="button" class="btn btn--ghost w-full" onclick="cerrarModal('modal-eliminar')">Cancelar</button>
+          <button type="submit" class="btn btn--danger w-full">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL ÉXITO
+══════════════════════════════════════ -->
+<div class="modal-overlay <% if (mensaje) { %> <% } else { %>hidden<% } %>" id="modal-exito">
+  <div class="modal" style="text-align:center;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap: var(--space-6); padding: var(--space-4) 0;">
+      <div class="success-card__icon">✅</div>
+      <h2 class="success-card__title" id="exito-titulo">
+        <% if (mensaje === 'creado')   { %>¡Cliente Registrado correctamente!<% } %>
+        <% if (mensaje === 'editado')  { %>¡Cambios Guardados correctamente!<% } %>
+        <% if (mensaje === 'eliminado'){ %>¡Cliente eliminado correctamente!<% } %>
+      </h2>
+      <button class="btn btn--primary" onclick="cerrarModal('modal-exito')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function abrirModalCrear() {
+    document.getElementById('modal-crear').classList.remove('hidden');
+  }
+
+  function abrirModalVer(id, nombre, nit, contacto, telefono, correo, direccion, sede) {
+    document.getElementById('ver-nombre').textContent   = nombre;
+    document.getElementById('ver-nit').textContent      = 'NIT: ' + nit;
+    document.getElementById('ver-contacto').textContent = contacto;
+    document.getElementById('ver-telefono').textContent = telefono;
+    document.getElementById('ver-correo').textContent   = correo;
+    document.getElementById('ver-sede').textContent     = sede + ' — ' + direccion;
+    document.getElementById('modal-ver').classList.remove('hidden');
+  }
+
+  function abrirModalEditar(id, nombre, nit, contacto, telefono, correo, direccion, sede) {
+    document.getElementById('edit-id').value        = id;
+    document.getElementById('edit-nombre').value    = nombre;
+    document.getElementById('edit-nit').value       = nit;
+    document.getElementById('edit-contacto').value  = contacto;
+    document.getElementById('edit-telefono').value  = telefono;
+    document.getElementById('edit-correo').value    = correo;
+    document.getElementById('edit-direccion').value = direccion;
+    document.getElementById('edit-sede').value      = sede;
+    document.getElementById('modal-editar').classList.remove('hidden');
+  }
+
+  function abrirModalEliminar(id, nombre) {
+    document.getElementById('eliminar-id').value          = id;
+    document.getElementById('eliminar-nombre').textContent = nombre;
+    document.getElementById('modal-eliminar').classList.remove('hidden');
+  }
+
+  function cerrarModal(id) {
+    document.getElementById(id).classList.add('hidden');
+    // Si cerramos el modal de éxito, limpiamos el query param de la URL
+    if (id === 'modal-exito') {
+      window.history.replaceState({}, '', '/admin/clientes');
+    }
+  }
+
+  // Cerrar al hacer click fuera del modal
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.classList.add('hidden');
+        if (overlay.id === 'modal-exito') {
+          window.history.replaceState({}, '', '/admin/clientes');
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Usuarios – Fumi Dorado</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div style="min-height:100vh; background:var(--color-bg); padding: var(--space-8);">
+  <div style="max-width: 1100px; margin: 0 auto; display:flex; flex-direction:column; gap: var(--space-6);">
+
+    <!-- HEADER -->
+    <div style="padding-bottom: var(--space-5); border-bottom: 2px solid var(--color-gold);">
+      <a href="/dashboard/admin" class="page-header__back" style="margin-bottom: var(--space-3); display:inline-flex;">
+        <span style="font-size:1.3rem; margin-right:var(--space-2);">←</span> Volver
+      </a>
+      <h1 class="page-header__title">Gestión de Usuarios</h1>
+      <p class="page-header__subtitle">Administra usuarios del sistema</p>
+    </div>
+
+    <!-- ERRORES -->
+    <% if (typeof errores !== 'undefined' && errores.length > 0) { %>
+      <div class="alert alert--error">
+        <% errores.forEach(function(e) { %><div>⚠ <%= e %></div><% }) %>
+      </div>
+    <% } %>
+
+    <!-- BOTÓN REGISTRAR -->
+    <div style="display:flex; justify-content:flex-end;">
+      <button class="btn btn--primary" onclick="abrirModalCrear()">+ Registrar Usuario</button>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Usuario</th>
+            <th>Contraseña</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% usuarios.forEach(function(u) { %>
+            <tr>
+              <td><%= u.nombre %></td>
+              <td><%= u.correo %></td>
+              <td><%= u.usuario %></td>
+              <td>********</td>
+              <td>
+                <span class="badge
+                  <%= u.rol === 'tecnico' ? 'badge--tecnico' : u.rol === 'cliente' ? 'badge--cliente' : 'badge--admin' %>">
+                  <%= u.rol.charAt(0).toUpperCase() + u.rol.slice(1) %>
+                </span>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <button class="btn-icon" title="Editar"
+                    onclick="abrirModalEditar('<%= u.id %>', '<%= u.nombre %>', '<%= u.correo %>', '<%= u.usuario %>', '<%= u.password %>', '<%= u.rol %>')">
+                    ✏️
+                  </button>
+                  <button class="btn-icon btn-icon--danger" title="Eliminar"
+                    onclick="abrirModalEliminar('<%= u.id %>', '<%= u.nombre %>')">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL CREAR
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-crear">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 class="modal__title">Registrar Nuevo Usuario</h3>
+      <button class="modal__close" onclick="cerrarModal('modal-crear')">✕</button>
+    </div>
+    <form action="/admin/gestion-usuarios/crear" method="POST">
+      <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-control" type="text" name="nombre" placeholder="Nombre completo" autofocus />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo Electrónico</label>
+          <input class="form-control" type="email" name="correo" placeholder="correo@fumidorado.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Usuario</label>
+          <input class="form-control" type="text" name="usuario" placeholder="carlos.r" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input class="form-control" type="password" name="password" placeholder="Mínimo 6 caracteres" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rol</label>
+          <select class="form-control" name="rol">
+            <option value="">Seleccionar rol...</option>
+            <option value="tecnico">Técnico</option>
+            <option value="cliente">Cliente</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn--primary btn--lg">Registrar Usuario</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL EDITAR
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-editar">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 class="modal__title">Editar Usuario</h3>
+      <button class="modal__close" onclick="cerrarModal('modal-editar')">✕</button>
+    </div>
+    <form action="/admin/gestion-usuarios/editar" method="POST">
+      <input type="hidden" name="id" id="edit-id" />
+      <div style="display:flex; flex-direction:column; gap: var(--space-4);">
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-control" type="text" name="nombre" id="edit-nombre" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo Electrónico</label>
+          <input class="form-control" type="email" name="correo" id="edit-correo" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Usuario</label>
+          <input class="form-control" type="text" name="usuario" id="edit-usuario" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input class="form-control" type="password" name="password" id="edit-password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rol</label>
+          <select class="form-control" name="rol" id="edit-rol">
+            <option value="tecnico">Técnico</option>
+            <option value="cliente">Cliente</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn--primary btn--lg">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL ELIMINAR
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-eliminar">
+  <div class="modal" style="text-align:center;">
+    <div class="modal__header">
+      <h3 class="modal__title">Eliminar Usuario</h3>
+      <button class="modal__close" onclick="cerrarModal('modal-eliminar')">✕</button>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap: var(--space-6); padding: var(--space-4) 0;">
+      <div style="font-size:3rem;">🗑️</div>
+      <p style="color: var(--color-text-muted); margin:0;">
+        ¿Estás seguro de eliminar a <strong id="eliminar-nombre" style="color:var(--color-text);"></strong>? Esta acción no se puede deshacer.
+      </p>
+      <form action="/admin/gestion-usuarios/eliminar" method="POST" style="width:100%;">
+        <input type="hidden" name="id" id="eliminar-id" />
+        <div style="display:flex; gap: var(--space-3);">
+          <button type="button" class="btn btn--ghost w-full" onclick="cerrarModal('modal-eliminar')">Cancelar</button>
+          <button type="submit" class="btn btn--danger w-full">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL ÉXITO
+══════════════════════════════════════ -->
+<div class="modal-overlay <%= mensaje ? '' : 'hidden' %>" id="modal-exito">
+  <div class="modal" style="text-align:center;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap: var(--space-6); padding: var(--space-4) 0;">
+      <div class="success-card__icon">✅</div>
+      <h2 class="success-card__title">
+        <% if (mensaje === 'creado')    { %>¡Usuario Registrado correctamente!<% } %>
+        <% if (mensaje === 'editado')   { %>¡Cambios Guardados correctamente!<% } %>
+        <% if (mensaje === 'eliminado') { %>¡Usuario eliminado correctamente!<% } %>
+      </h2>
+      <button class="btn btn--primary" onclick="cerrarModal('modal-exito')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function abrirModalCrear() {
+    document.getElementById('modal-crear').classList.remove('hidden');
+  }
+
+  function abrirModalEditar(id, nombre, correo, usuario, password, rol) {
+    document.getElementById('edit-id').value       = id;
+    document.getElementById('edit-nombre').value   = nombre;
+    document.getElementById('edit-correo').value   = correo;
+    document.getElementById('edit-usuario').value  = usuario;
+    document.getElementById('edit-password').value = password;
+    document.getElementById('edit-rol').value      = rol;
+    document.getElementById('modal-editar').classList.remove('hidden');
+  }
+
+  function abrirModalEliminar(id, nombre) {
+    document.getElementById('eliminar-id').value           = id;
+    document.getElementById('eliminar-nombre').textContent = nombre;
+    document.getElementById('modal-eliminar').classList.remove('hidden');
+  }
+
+  function cerrarModal(id) {
+    document.getElementById(id).classList.add('hidden');
+    if (id === 'modal-exito') {
+      window.history.replaceState({}, '', '/admin/gestion-usuarios');
+    }
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.classList.add('hidden');
+        if (overlay.id === 'modal-exito') {
+          window.history.replaceState({}, '', '/admin/gestion-usuarios');
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>
