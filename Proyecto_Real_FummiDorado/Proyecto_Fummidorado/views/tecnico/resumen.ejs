@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Servicios de Hoy</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+
+<div class="layout-full">
+
+  <main class="main-content">
+
+    <!-- HEADER -->
+    <div class="hifi-header">
+
+      <div class="hifi-title">
+
+        <a href="/dashboard/tecnico" class="back-arrow">←</a>
+
+        <div>
+          <h2>Servicios de Hoy</h2>
+          <p>Resumen del día</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="summary-cards">
+
+      <!-- TOTAL -->
+      <div class="summary-card">
+        <div class="summary-card__title">
+          Total de servicios
+        </div>
+
+        <div class="summary-card__number">
+          <%= totalServicios %>
+        </div>
+
+        <div class="summary-card__subtitle">
+          Servicios programados
+        </div>
+      </div>
+
+      <!-- COMPLETADOS -->
+      <div class="summary-card">
+        <div class="summary-card__title">
+          Completados
+        </div>
+
+        <div class="summary-card__number summary-card__number--green">
+          <%= completados %>
+        </div>
+
+        <div class="summary-card__subtitle">
+          Servicios finalizados
+        </div>
+      </div>
+
+      <!-- PENDIENTES -->
+      <div class="summary-card">
+        <div class="summary-card__title">
+          Pendientes
+        </div>
+
+        <div class="summary-card__number summary-card__number--gold">
+          <%= pendientes %>
+        </div>
+
+        <div class="summary-card__subtitle">
+          Por completar
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LISTA -->
+    <div class="summary-list">
+
+      <div class="summary-list__title">
+        Lista de servicios del día
+      </div>
+
+      <% serviciosHoy.forEach(servicio => { %>
+
+      <div class="service-item">
+
+        <div class="service-item__info">
+
+        <div class="service-item__cliente">
+            <%= servicio.nombreCliente %>
+        </div>
+
+        <div class="service-item__os">
+            <%= servicio.codigoOs %>
+        </div>
+
+        <div class="service-item__hora">
+            🕐 <%= servicio.horaInicio %>
+        </div>
+
+        <div class="service-item__tipo">
+            Tipo: <%= servicio.nombreTipoServicio %>
+        </div>
+
+    </div>
+
+        <div class="service-item__sede">
+        📍 <%= servicio.nombreSede %>
+        </div>
+
+    <div>
+
+          <% if(servicio.estado === 'Finalizado') { %>
+
+            <span class="badge badge--success">
+              Completado
+            </span>
+
+          <% } else { %>
+
+            <span class="badge badge--gold">
+              Pendiente
+            </span>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+      <% }) %>
+
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

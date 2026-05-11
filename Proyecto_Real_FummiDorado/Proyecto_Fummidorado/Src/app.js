@@ -1,8 +1,6 @@
 import express from 'express';
-import { join, resolve } from "path";
-
-import session from 'express-session';
 import { join } from "path";
+import session from 'express-session';
 
 import appRouter from "./routes/router.js";
 import { verLogin, procesarLogin, cerrarSesion } from "./controllers/usuarioController.js";
@@ -12,53 +10,48 @@ const port = 3000;
 
 app.set("view engine", 'ejs');
 app.set("views", "views");
+
 app.use(express.static(join("./public")));
 app.use(express.urlencoded({ extended: true }));
 
-// ── Sesiones ──────────────────────────────────────────────────
+// ── Sesiones ─────────────────────────
 app.use(session({
     secret: 'fumidorado_secret_key',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 8 } // 8 horas
+    cookie: { maxAge: 1000 * 60 * 60 * 8 }
 }));
 
-// Hace que `user` esté disponible en todos los EJS automáticamente
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     next();
 });
 
-// ── Rutas de la app ───────────────────────────────────────────
+// ── Router principal ─────────────────
 app.use("/", appRouter);
 
-
-app.get('/login', (req, res) => {
-  res.render('usuario/login');
-// ── Login / Logout ────────────────────────────────────────────
+// ── Login / Logout ───────────────────
 app.get('/login', verLogin);
 app.post('/usuario/login', procesarLogin);
 app.get('/usuario/logout', cerrarSesion);
 
-// ── Dashboards ────────────────────────────────────────────────
+// ── Dashboards ───────────────────────
 app.get('/dashboard/admin', (req, res) => {
     if (!req.session.user || req.session.user.rol !== 'admin') return res.redirect('/login');
-    res.render('Usuario/dashboards/admin');
+    res.render('usuario/dashboards/admin');
 });
 
 app.get('/dashboard/tecnico', (req, res) => {
     if (!req.session.user || req.session.user.rol !== 'tecnico') return res.redirect('/login');
-    res.render('Usuario/dashboards/tecnico');
+    res.render('usuario/dashboards/tecnico');
 });
 
 app.get('/dashboard/cliente', (req, res) => {
-  res.render('usuario/dashboards/cliente');
+    if (!req.session.user || req.session.user.rol !== 'cliente') return res.redirect('/login');
+    res.render('usuario/dashboards/cliente');
 });
 
-app.get('/usuario/logout', (req, res) => {
-  res.redirect('/login');
-});
-
+// ── Perfiles ─────────────────────────
 app.get('/usuario/perfil/cliente', (req, res) => {
     res.render('usuario/perfil/perfil_cliente');
 });
@@ -68,36 +61,12 @@ app.get('/usuario/perfil/tecnico', (req, res) => {
 });
 
 app.get('/usuario/perfil/admin', (req, res) => {
-  res.render('usuario/perfil/perfil_admin');
+    res.render('usuario/perfil/perfil_admin');
 });
 
+app.use(express.urlencoded({ extended: true }));
 
-
-
-app.post('/usuario/login', (req, res) => {
-  const { role } = req.body;
-
-  if (!role) return res.redirect('/login');
-
-  if (role === 'admin') {
-    return res.redirect('/dashboard/admin');
-  }
-
-  if (role === 'tecnico') {
-    return res.redirect('/dashboard/tecnico');
-  }
-
-  if (role === 'cliente') {
-    return res.redirect('/dashboard/cliente');
-  }
-
-  res.redirect('/login');
-});
-
-    if (!req.session.user || req.session.user.rol !== 'cliente') return res.redirect('/login');
-    res.render('Usuario/dashboards/cliente');
-});
-
+// ── Server ───────────────────────────
 app.listen(port, () => {
     console.log(`Server running 🚀 at http://localhost:${port}`);
 });

@@ -1,108 +1,1225 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formularios - Fumi Dorado</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Formulario Servicio</title>
+
   <link rel="stylesheet" href="/css/styles.css">
+
 </head>
+
 <body>
-<div class="layout">
 
-  <%- include('../partials/sidebar.ejs', { currentPage: 'formulario' }) %>
+  <div class="formulario-page">
 
-  <main class="main-content <%= user.rol !== 'admin' ? 'main-content--full' : '' %>">
+    <!-- HEADER -->
 
-    <!-- Navbar para técnico/cliente (sin sidebar) -->
-    <%- include('../partials/navbar.ejs') %>
+    <header class="formulario-topbar">
 
-    <!-- Flecha volver al dashboard -->
-    <a href="/dashboard/<%= user.rol %>" class="auth-back-link" style="margin-bottom: var(--space-4);">
-      ← Volver al dashboard
-    </a>
+      <div class="formulario-topbar-left">
 
-    <!-- Encabezado -->
-    <div class="page-header">
-      <div>
-        <h2 class="page-header__title">
-          <% if (user.rol === 'cliente') { %>
-            Documentos de Servicio
-          <% } else if (user.rol === 'tecnico') { %>
-            Mis Formularios
-          <% } else { %>
-            Formularios de Servicio
-          <% } %>
-        </h2>
-        <p class="page-header__subtitle">
-          <% if (user.rol === 'cliente') { %>
-            Consulta los documentos generados para tus servicios
-          <% } else if (user.rol === 'tecnico') { %>
-            Formularios de tus órdenes asignadas
-          <% } else { %>
-            Consulta los formularios diligenciados por los técnicos
-          <% } %>
-        </p>
+        <a href="/ordenServicio">
+          ←
+        </a>
+
+        <div>
+
+          <h1>Formulario del servicio</h1>
+
+          <p>OS: <%= orden.codigoOs %></p>
+
+        </div>
+
       </div>
-    </div>
 
-    <!-- Tabla -->
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>OS</th>
-            <% if (user.rol !== 'cliente') { %>
-              <th>Cliente</th>
-              <th>Sede</th>
-            <% } %>
-            <% if (user.rol !== 'tecnico') { %>
-              <th>Técnico</th>
-            <% } %>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% formularios.forEach(formulario => { %>
-          <tr>
-            <td class="text-gold"><%= formulario.codigoOs %></td>
-            <% if (user.rol !== 'cliente') { %>
-              <td><%= formulario.nombreCliente %></td>
-              <td><%= formulario.nombreSede %></td>
-            <% } %>
-            <% if (user.rol !== 'tecnico') { %>
-              <td><%= formulario.nombreTecnico %></td>
-            <% } %>
-            <td><%= formulario.fechaServicio %></td>
-            <td>
-              <% if (formulario.estado === 'Finalizado') { %>
-                <span class="badge badge--finalizado">Finalizado</span>
-              <% } else { %>
-                <span class="badge badge--proceso">En proceso</span>
-              <% } %>
-            </td>
-            <td>
-              <div class="table-actions">
-                <!-- Ver documento: todos pueden -->
-                <a href="/formulario/<%= formulario.idFormulario %>" class="btn-icon btn-icon--view" title="Ver">👁️</a>
-                <!-- Editar: solo técnico y admin -->
-                <% if (user.rol === 'tecnico' || user.rol === 'admin') { %>
-                  <a href="/formulario/<%= formulario.idFormulario %>/editar" class="btn-icon" title="Editar">✏️</a>
-                <% } %>
-                <!-- Eliminar: solo admin -->
-                <% if (user.rol === 'admin') { %>
-                  <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
-                <% } %>
+    </header>
+
+    <!-- CONTENIDO -->
+
+    <main class="formulario-wrapper">
+
+      <!-- DATOS GENERALES -->
+
+      <section class="formulario-section">
+
+        <div class="formulario-section-title">
+
+          <h2>1. Datos Generales</h2>
+
+        </div>
+
+        <div class="formulario-grid">
+
+          <!-- OS -->
+
+          <div class="formulario-group">
+
+            <label>OS *</label>
+
+            <input
+              type="text"
+              value="<%= orden.codigoOs %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- CLIENTE -->
+
+          <div class="formulario-group">
+
+            <label>Cliente *</label>
+
+            <input
+              type="text"
+              value="<%= orden.nombreCliente %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- SEDE -->
+
+          <div class="formulario-group">
+
+            <label>Sede *</label>
+
+            <input
+              type="text"
+              value="<%= orden.nombreSede %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- FECHA -->
+
+          <div class="formulario-group">
+
+            <label>Fecha *</label>
+
+            <input
+              type="text"
+              value="<%= orden.fechaProgramada %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- HORA PROGRAMADA -->
+
+          <div class="formulario-group">
+
+            <label>Hora programada *</label>
+
+            <input
+              type="text"
+              value="<%= orden.horaInicio %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- TÉCNICO -->
+
+          <div class="formulario-group">
+
+            <label>Técnico asignado *</label>
+
+            <input
+              type="text"
+              value="<%= orden.nombreTecnico %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- TIPO SERVICIO -->
+
+          <div class="formulario-group">
+
+            <label>Tipo de servicio *</label>
+
+            <input
+              type="text"
+              value="<%= orden.nombreTipoServicio %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- DIRECCIÓN -->
+
+          <div class="formulario-group">
+
+            <label>Dirección sede *</label>
+
+            <input
+              type="text"
+              value="<%= orden.direccionSede %>"
+              readonly
+            >
+
+          </div>
+
+          <!-- OBSERVACIONES -->
+
+          <div class="formulario-group formulario-full">
+
+            <label>Observaciones *</label>
+
+            <textarea readonly><%= orden.observaciones %></textarea>
+
+          </div>
+
+          <!-- HORA LLEGADA -->
+
+          <div class="formulario-group">
+
+            <label>Hora de llegada *</label>
+
+            <input type="time">
+
+          </div>
+
+          <!-- HORA INICIO -->
+
+          <div class="formulario-group">
+
+            <label>Hora de inicio *</label>
+
+            <input type="time">
+
+          </div>
+
+          <!-- HORA TERMINACIÓN -->
+
+          <div class="formulario-group">
+
+            <label>Hora de terminación *</label>
+
+            <input type="time">
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- DIAGNÓSTICO E INSPECCIÓN -->
+
+      <section class="formulario-section">
+
+        <div class="formulario-section-title">
+
+          <h2>2. Diagnóstico e Inspección</h2>
+
+        </div>
+
+        <div class="diagnostico-container">
+
+          <!-- ITEM -->
+
+          <% 
+            const inspecciones = [
+              'Techo',
+              'Paredes',
+              'Pisos',
+              'Ventanas',
+              'Puertas',
+              'Iluminación',
+              'Ventilación',
+              'Drenajes'
+            ];
+          %>
+
+          <% inspecciones.forEach(item => { %>
+
+            <div class="diagnostico-card">
+
+              <h3><%= item %> *</h3>
+
+              <div class="radio-group">
+
+                <!-- ADECUADO -->
+
+                <label class="radio-option">
+
+                  <input
+                    type="radio"
+                    name="<%= item %>"
+                    value="Adecuado"
+                    onchange="toggleDiagnostico('<%= item %>', false)"
+                  >
+
+                  Adecuado
+
+                </label>
+
+                <!-- NO ADECUADO -->
+
+                <label class="radio-option">
+
+                  <input
+                    type="radio"
+                    name="<%= item %>"
+                    value="No adecuado"
+                    onchange="toggleDiagnostico('<%= item %>', true)"
+                  >
+
+                  No adecuado
+
+                </label>
+
               </div>
-            </td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
 
-  </main>
-</div>
+              <!-- CAMPOS EXTRA -->
+
+              <div
+                id="extra-<%= item %>"
+                class="diagnostico-extra hidden"
+              >
+
+                <div class="formulario-group">
+
+                  <label>Lugar</label>
+
+                  <input
+                    type="text"
+                    placeholder="Ej: Cocina, baño, recepción..."
+                  >
+
+                </div>
+
+                <div class="formulario-group">
+
+                  <label>Recomendaciones</label>
+
+                  <textarea
+                    placeholder="Escriba recomendaciones..."
+                  ></textarea>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          <% }) %>
+
+        </div>
+
+      </section>
+
+      <!-- CONTROL DE ÁREAS -->
+
+      <section class="formulario-section">
+
+        <div class="formulario-section-title">
+
+          <h2>3. Control de Áreas</h2>
+
+        </div>
+
+        <p class="formulario-subtitle">
+          Seleccione las áreas donde se realizó el control *
+        </p>
+
+        <div class="areas-container">
+
+          <%
+            const areas = [
+              'Cocina',
+              'Habitaciones',
+              'Baños',
+              'Área común',
+              'Almacén',
+              'Exterior'
+            ];
+          %>
+
+          <% areas.forEach(area => { %>
+
+            <div class="area-card">
+
+              <label class="area-check">
+
+                <input
+                  type="checkbox"
+                  onchange="toggleArea('<%= area %>', this.checked)"
+                >
+
+                <span><%= area %></span>
+
+              </label>
+
+              <!-- DESPLEGABLE -->
+
+              <div
+                id="extra-area-<%= area %>"
+                class="area-extra hidden"
+              >
+
+                <div class="formulario-group">
+
+                  <label>¿Qué se colocó? *</label>
+
+                  <select>
+
+                    <option value="">
+                      Seleccione una opción
+                    </option>
+
+                    <option>Lámpara</option>
+
+                    <option>Monitor Catch Master</option>
+
+                    <option>Gato de papel</option>
+
+                    <option>Otros</option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          <% }) %>
+
+        </div>
+
+      </section>
+
+      <!-- TIPO Y MÉTODO DE CONTROL -->
+
+      <section class="formulario-section">
+
+        <div class="formulario-section-title">
+
+          🧪
+
+          <h2>4. Tipo y Método de Control</h2>
+
+        </div>
+
+        <!-- TIPOS -->
+
+        <div class="metodo-block">
+
+          <p class="formulario-subtitle">
+            Tipos de control *
+          </p>
+
+          <div class="metodo-list">
+
+            <label class="metodo-check">
+              <input type="checkbox">
+              <span>Desinsectación</span>
+            </label>
+
+            <label class="metodo-check">
+              <input type="checkbox">
+              <span>Control de roedores</span>
+            </label>
+
+            <label class="metodo-check">
+              <input type="checkbox">
+              <span>Desinfección / Sanitización</span>
+            </label>
+
+          </div>
+
+        </div>
+
+        <!-- MÉTODOS -->
+
+        <div class="metodo-block">
+
+          <p class="formulario-subtitle">
+            Métodos *
+          </p>
+
+          <!-- DESINSECTACIÓN -->
+
+          <div class="metodo-group">
+
+            <h3>Desinsectación:</h3>
+
+            <div class="metodo-list">
+
+              <label class="metodo-check">
+                <input type="checkbox">
+                <span>Aspirado</span>
+              </label>
+
+              <label class="metodo-check">
+                <input type="checkbox">
+                <span>Vaporización</span>
+              </label>
+
+              <label class="metodo-check">
+                <input type="checkbox">
+                <span>Pegamentos</span>
+              </label>
+
+            </div>
+
+          </div>
+
+          <!-- ROEDORES -->
+
+          <div class="metodo-group">
+
+            <h3>Control de roedores:</h3>
+
+            <div class="metodo-list">
+
+              <label class="metodo-check">
+                <input type="checkbox">
+                <span>Cebo suelto</span>
+              </label>
+
+              <label class="metodo-check">
+                <input type="checkbox">
+                <span>Estación cebadera</span>
+              </label>
+
+            </div>
+
+          </div>
+
+          <!-- DESINFECCIÓN -->
+
+          <div class="metodo-group">
+
+            <h3>Desinfección / Sanitización:</h3>
+
+            <div class="metodo-list">
+
+              <label class="metodo-check">
+                <input type="checkbox">
+                <span>Aspersión</span>
+              </label>
+
+              <label class="metodo-check">
+                <input type="checkbox">
+                <span>Nebulización</span>
+              </label>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- INSPECCIÓN DEL SERVICIO -->
+
+      <section class="formulario-section">
+
+        <div class="formulario-section-title">
+
+          <h2>5. Inspección del Servicio</h2>
+
+        </div>
+
+        <p class="formulario-subtitle">
+          Plagas encontradas *
+        </p>
+
+        <%
+          const plagas = [
+            'Cucarachas',
+            'Roedores',
+            'Hormigas',
+            'Moscas',
+            'Mosquitos',
+            'Chinches',
+            'No hay presencia'
+          ];
+        %>
+
+        <!-- CHECKS -->
+
+        <div class="plagas-list">
+
+          <% plagas.forEach(plaga => { %>
+
+            <label class="metodo-check">
+
+              <input
+                type="checkbox"
+                onchange="togglePlaga('<%= plaga %>', this.checked)"
+              >
+
+              <span><%= plaga %></span>
+
+            </label>
+
+          <% }) %>
+
+        </div>
+
+        <!-- DETALLES -->
+
+        <div class="plagas-detalles">
+
+          <h3>Detalles de plagas detectadas:</h3>
+
+          <% plagas.forEach(plaga => { %>
+
+            <% if(plaga !== 'No hay presencia'){ %>
+
+              <div
+                id="detalle-<%= plaga %>"
+                class="plaga-card hidden"
+              >
+
+                <h4><%= plaga %></h4>
+
+                <p>Nivel *</p>
+
+                <div class="nivel-group">
+
+                  <label class="radio-option">
+
+                    <input
+                      type="radio"
+                      name="nivel-<%= plaga %>"
+                    >
+
+                    Bajo
+
+                  </label>
+
+                  <label class="radio-option">
+
+                    <input
+                      type="radio"
+                      name="nivel-<%= plaga %>"
+                    >
+
+                    Medio
+
+                  </label>
+
+                  <label class="radio-option">
+
+                    <input
+                      type="radio"
+                      name="nivel-<%= plaga %>"
+                    >
+
+                    Alto
+
+                  </label>
+
+                </div>
+
+              </div>
+
+            <% } %>
+
+          <% }) %>
+
+        </div>
+
+      </section>
+
+      <!-- CONDICIONES DEL LUGAR -->
+
+      <section class="formulario-section">
+
+        <div class="formulario-section-title">
+
+          <h2>6. Condiciones del Lugar</h2>
+
+        </div>
+
+        <div class="formulario-grid">
+
+          <!-- HIGIENE -->
+
+          <div class="formulario-group">
+
+            <label>Higiene *</label>
+
+            <select>
+
+              <option value="">Seleccione</option>
+
+              <option>Excelente</option>
+
+              <option>Bueno</option>
+
+              <option>Regular</option>
+
+              <option>Malo</option>
+
+            </select>
+
+          </div>
+
+          <!-- INSTALACIONES -->
+
+          <div class="formulario-group">
+
+            <label>Instalaciones *</label>
+
+            <select>
+
+              <option value="">Seleccione</option>
+
+              <option>Excelente</option>
+
+              <option>Bueno</option>
+
+              <option>Regular</option>
+
+              <option>Malo</option>
+
+            </select>
+
+          </div>
+
+          <!-- ESTRUCTURA -->
+
+          <div class="formulario-group">
+
+            <label>Estructura *</label>
+
+            <select>
+
+              <option value="">Seleccione</option>
+
+              <option>Excelente</option>
+
+              <option>Bueno</option>
+
+              <option>Regular</option>
+
+              <option>Malo</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ESTACIONES CEBADERAS -->
+
+      <section class="formulario-section">
+
+        <div class="cebaderas-header">
+
+          <div class="formulario-section-title">
+
+            <h2>7. Estaciones Cebaderas</h2>
+
+          </div>
+
+          <button
+            type="button"
+            class="btn-agregar-estacion"
+            onclick="agregarEstacion()"
+          >
+            + Agregar estación
+          </button>
+
+        </div>
+
+        <!-- MENSAJE VACÍO -->
+
+        <div id="sinEstaciones" class="sin-estaciones">
+
+          No hay estaciones cebaderas registradas
+
+        </div>
+
+        <!-- CONTENEDOR -->
+
+        <div id="contenedorEstaciones"></div>
+
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- 9. OBSERVACIONES GENERALES -->
+      <!-- ===================================================== -->
+
+      <section class="formulario-section">
+
+        <h2 class="section-title">
+          9. Observaciones Generales
+        </h2>
+
+        <div class="formulario-group formulario-full">
+
+          <textarea
+            placeholder="Observaciones generales del servicio realizado *"
+            class="formulario-textarea"
+          ></textarea>
+
+        </div>
+
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- 10. EVIDENCIA FOTOGRÁFICA -->
+      <!-- ===================================================== -->
+
+      <section class="formulario-section">
+
+        <h2 class="section-title">
+          10. Evidencia Fotográfica
+        </h2>
+
+        <label class="upload-box">
+
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            hidden
+          >
+
+          <span class="upload-icon">
+            ⬆
+          </span>
+
+          <span class="upload-text">
+            Cargar imágenes
+          </span>
+
+        </label>
+
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- 11. FIRMAS DIGITALES -->
+      <!-- ===================================================== -->
+
+      <section class="formulario-section">
+
+        <h2 class="section-title">
+          11. Firmas Digitales
+        </h2>
+
+        <div class="firmas-grid">
+
+          <!-- FIRMA CLIENTE -->
+
+          <div class="firma-card">
+
+            <label>
+              Firma del Cliente *
+            </label>
+
+            <canvas
+              id="firmaCliente"
+              class="firma-canvas"
+            ></canvas>
+
+            <button
+              type="button"
+              class="btn-limpiar"
+              onclick="limpiarFirma('firmaCliente')"
+            >
+              Limpiar firma
+            </button>
+
+            <input
+              type="text"
+              placeholder="Nombre del cliente"
+              class="firma-input"
+            >
+
+          </div>
+
+          <!-- FIRMA TECNICO -->
+
+          <div class="firma-card">
+
+            <label>
+              Firma del Técnico *
+            </label>
+
+            <canvas
+              id="firmaTecnico"
+              class="firma-canvas"
+            ></canvas>
+
+            <button
+              type="button"
+              class="btn-limpiar"
+              onclick="limpiarFirma('firmaTecnico')"
+            >
+              Limpiar firma
+            </button>
+
+            <input
+              type="text"
+              placeholder="Nombre del técnico"
+              class="firma-input"
+            >
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <div class="formulario-actions">
+
+        <a
+          href="/ordenServicio"
+          class="btn-cancelar"
+        >
+          Cancelar
+        </a>
+
+        <button class="btn-finalizar">
+          Finalizar servicio
+        </button>
+
+      </div>
+
+    </main>
+
+  </div>
+
+<script>
+
+  function toggleDiagnostico(nombre, mostrar){
+
+    const extra = document.getElementById(`extra-${nombre}`);
+
+    if(mostrar){
+      extra.classList.remove('hidden');
+    } else {
+      extra.classList.add('hidden');
+    }
+
+  }
+
+</script>
+
+<script>
+
+  function toggleArea(nombre, mostrar){
+
+    const extra = document.getElementById(`extra-area-${nombre}`);
+
+    if(mostrar){
+      extra.classList.remove('hidden');
+    } else {
+      extra.classList.add('hidden');
+    }
+
+  }
+
+</script>
+
+<script>
+
+  function togglePlaga(nombre, mostrar){
+
+    const detalle = document.getElementById(`detalle-${nombre}`);
+
+    if(!detalle) return;
+
+    if(mostrar){
+      detalle.classList.remove('hidden');
+    } else {
+      detalle.classList.add('hidden');
+    }
+
+  }
+
+</script>
+
+<script>
+
+  let contadorEstaciones = 0;
+
+  function agregarEstacion(){
+
+    contadorEstaciones++;
+
+    document
+      .getElementById('sinEstaciones')
+      .classList.add('hidden');
+
+    const container =
+      document.getElementById('contenedorEstaciones');
+
+    const card = document.createElement('div');
+
+    card.className = 'estacion-card';
+
+    card.id = `estacion-${contadorEstaciones}`;
+
+    card.innerHTML = `
+
+      <div class="estacion-top">
+
+        <h3>Estación #${contadorEstaciones}</h3>
+
+        <button
+          type="button"
+          class="btn-delete"
+          onclick="eliminarEstacion(${contadorEstaciones})"
+        >
+          🗑
+        </button>
+
+      </div>
+
+      <div class="formulario-grid">
+
+        <div class="formulario-group">
+
+          <label>Número *</label>
+
+          <input
+            type="text"
+            placeholder="Ej: E-001"
+          >
+
+        </div>
+
+        <div class="formulario-group">
+
+          <label>Estado actual *</label>
+
+          <input
+            type="text"
+            placeholder="Ej: Activa"
+          >
+
+        </div>
+
+        <div class="formulario-group">
+
+          <label>Estado final *</label>
+
+          <input
+            type="text"
+            placeholder="Ej: Activa"
+          >
+
+        </div>
+
+        <div class="formulario-group">
+
+          <label>Consumo *</label>
+
+          <select>
+
+            <option value="">
+              Seleccione
+            </option>
+
+            <option>Si</option>
+
+            <option>No</option>
+
+          </select>
+
+        </div>
+
+        <div class="formulario-group">
+
+          <label>Repone *</label>
+
+          <select>
+
+            <option value="">
+              Seleccione
+            </option>
+
+            <option>Si</option>
+
+            <option>No</option>
+
+          </select>
+
+        </div>
+
+        <div class="formulario-group">
+
+          <label>Tipo *</label>
+
+          <select>
+
+            <option value="">
+              Seleccione
+            </option>
+
+            <option>Química</option>
+
+            <option>Mecánica</option>
+
+            <option>Ecológica</option>
+
+          </select>
+
+        </div>
+
+        <div class="formulario-group formulario-full">
+
+          <label>Observación</label>
+
+          <textarea
+            placeholder="Observaciones adicionales"
+          ></textarea>
+
+        </div>
+
+        <div class="formulario-group formulario-full">
+
+          <label>Imágenes (máx. 2)</label>
+
+          <label class="upload-box">
+
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onchange="validarImagenes(this)"
+              hidden
+            >
+
+            <span class="upload-icon">
+              ⬆
+            </span>
+
+            <span class="upload-text">
+              Cargar imagen
+            </span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+    `;
+
+    container.appendChild(card);
+
+  }
+
+  function eliminarEstacion(id){
+
+    const card = document.getElementById(`estacion-${id}`);
+
+    card.remove();
+
+    const restantes =
+      document.querySelectorAll('.estacion-card');
+
+    if(restantes.length === 0){
+
+      document
+        .getElementById('sinEstaciones')
+        .classList.remove('hidden');
+
+    }
+
+  }
+
+  function validarImagenes(input){
+
+    if(input.files.length > 2){
+
+      alert('Solo se permiten máximo 2 imágenes');
+
+      input.value = '';
+
+    }
+
+  }
+
+</script>
+
+<script>
+
+function activarFirma(idCanvas){
+
+  const canvas = document.getElementById(idCanvas);
+  const ctx = canvas.getContext("2d");
+
+  let dibujando = false;
+
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#000";
+
+  canvas.addEventListener("mousedown", () => {
+    dibujando = true;
+  });
+
+  canvas.addEventListener("mouseup", () => {
+    dibujando = false;
+    ctx.beginPath();
+  });
+
+  canvas.addEventListener("mousemove", dibujar);
+
+  function dibujar(e){
+
+    if(!dibujando) return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    ctx.lineTo(
+      e.clientX - rect.left,
+      e.clientY - rect.top
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      e.clientX - rect.left,
+      e.clientY - rect.top
+    );
+
+  }
+
+}
+
+function limpiarFirma(idCanvas){
+
+  const canvas = document.getElementById(idCanvas);
+  const ctx = canvas.getContext("2d");
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+}
+
+activarFirma("firmaCliente");
+activarFirma("firmaTecnico");
+
+</script>
+
 </body>
+
 </html>

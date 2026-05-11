@@ -1,110 +1,844 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Órdenes de Servicio - Fumi Dorado</title>
+  <title>Gestión de Servicios - Fumi Dorado</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
-<div class="layout">
 
-  <%- include('../partials/sidebar.ejs', { currentPage: 'ordenServicio' }) %>
+<div class="layout-full">
+  <main class="main-content">
 
-  <<main class="main-content <%= user.rol !== 'admin' ? 'main-content--full' : '' %>">
+<!-- HEADER -->
 
-    <!-- Navbar para técnico/cliente (sin sidebar) -->
-    <%- include('../partials/navbar.ejs') %>
+<div class="hifi-header">
+  <div class="hifi-title">
+    <a href="/dashboard/<%= user.rol %>" class="back-arrow">←</a>
+    <div>
+      <h2>
+          <% if(modoVista === 'cliente-completados') { %>
 
-    <!-- Flecha volver al dashboard -->
-    <a href="/dashboard/<%= user.rol %>" class="auth-back-link" style="margin-bottom: var(--space-4);">
-      ← Volver al dashboard
-    </a>
+            Servicios Completados
 
-    <!-- Encabezado -->
-    <div class="page-header">
-      <div>
-        <h2 class="page-header__title">
-          <% if (user.rol === 'cliente') { %>
-            Mis Servicios
+          <% } else if(modoVista === 'cliente-programacion') { %>
+
+            Programación
+
+          <% } else if(user.rol === 'tecnico') { %>
+
+            Servicios
+
           <% } else { %>
+
             Gestión de Servicios
+
           <% } %>
-        </h2>
-        <p class="page-header__subtitle">
-          <% if (user.rol === 'cliente') { %>
-            Consulta el estado de tus servicios contratados
-          <% } else if (user.rol === 'tecnico') { %>
-            Órdenes de servicio asignadas
+
+      </h2>
+
+      <p>
+
+          <% if(modoVista === 'cliente-completados') { %>
+
+            Historial de servicios realizados
+
+          <% } else if(modoVista === 'cliente-programacion') { %>
+
+            Servicios programados próximamente
+
+          <% } else if(user.rol === 'tecnico') { %>
+
+            Gestión de servicios asignados
+
           <% } else { %>
+
             Administra órdenes de servicio
-          <% } %>
-        </p>
-      </div>
-      <!-- Solo admin puede crear -->
-      <% if (user.rol === 'admin') { %>
-        <button class="btn btn--primary">+ Crear Servicio</button>
-      <% } %>
+
+        <% } %>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- BOTÓN -->
+
+<div class="acciones-superiores">
+
+  <% if(user.rol === 'admin' && modoVista === 'default') { %>
+
+    <button onclick="abrirModal()" class="btn btn--primary">
+      + Crear Servicio
+    </button>
+
+  <% } %>
+
+  <% if(modoVista === 'cliente-programacion') { %>
+
+    <button
+      onclick="abrirModalSolicitud()"
+      class="btn btn--primary"
+    >
+      + Solicitar un Servicio
+    </button>
+
+  <% } %>
+
+</div>
+
+<% if(user.rol === 'tecnico' && modoVista === 'default') { %>
+
+<!-- FILTROS -->
+<div class="filters-box">
+
+  <form method="GET" action="/ordenServicio">
+
+    <!-- BUSCADOR -->
+    <input
+      type="text"
+      name="buscar"
+      placeholder="Busca por OS, cliente o dirección"
+      value="<%= filtros?.buscar || '' %>"
+      class="filter-input filter-search"
+    >
+
+    <div class="filters-row">
+
+      <!-- FECHA -->
+      <input
+        type="date"
+        name="fecha"
+        value="<%= filtros?.fecha || '' %>"
+        class="filter-input"
+      >
+
+      <!-- HORA -->
+      <input
+        type="time"
+        name="hora"
+        value="<%= filtros?.hora || '' %>"
+        class="filter-input"
+      >
+
+      <!-- ESTADO -->
+      <select name="estado" class="filter-input">
+
+        <option value="">Todos los estados</option>
+
+        <option value="Por ejecutar"
+          <%= filtros?.estado === 'Por ejecutar' ? 'selected' : '' %>>
+          Por ejecutar
+        </option>
+
+        <option value="En proceso"
+          <%= filtros?.estado === 'En proceso' ? 'selected' : '' %>>
+          En proceso
+        </option>
+
+        <option value="Finalizado"
+          <%= filtros?.estado === 'Finalizado' ? 'selected' : '' %>>
+          Finalizado
+        </option>
+
+      </select>
+
+      <!-- FILTRAR -->
+      <button type="submit" class="btn btn--primary">
+        Filtrar
+      </button>
+
+      <!-- LIMPIAR -->
+      <a href="/ordenServicio" class="btn btn--secondary">
+        Limpiar Filtros
+      </a>
+
     </div>
 
-    <!-- Tabla -->
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>OS</th>
-            <th>Fecha</th>
+  </form>
+
+</div>
+
+<% } %>
+
+<!-- TABLA -->
+
+<div class="hifi-content">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+
+          <th>OS</th>
+          <th>Fecha</th>
+
+          <% if(modoVista !== 'cliente-programacion') { %>
             <th>Hora</th>
-            <!-- Cliente no ve la columna Técnico -->
-            <% if (user.rol !== 'cliente') { %>
-              <th>Cliente</th>
-              <th>Sede</th>
-            <% } %>
+          <% } %>
+
+          <% if(modoVista === 'default') { %>
+            <th>Cliente</th>
+          <% } %>
+
+          <% if(modoVista === 'cliente-programacion') { %>
+
+            <th>Tipo de Servicio</th>
+            <th>Técnico Asignado</th>
+            <th>Sedes</th>
+
+          <% } else if(modoVista === 'cliente-completados') { %>
+
+            <th>Tipo de Servicio</th>
+            <th>Sede</th>
+            <th>Dirección</th>
+
+          <% } else { %>
+
+            <th>Sede</th>
             <th>Técnico</th>
+            <th>Tipo de Servicio</th>
+
+          <% } %>
+
+          <% if(modoVista === 'default') { %>
+            <th>Observaciones</th>
+          <% } %>
+
+          <% if(modoVista !== 'cliente-programacion') { %>
             <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% ordenes.forEach(orden => { %>
-          <tr>
-            <td class="text-gold"><%= orden.codigoOs %></td>
-            <td><%= orden.fechaProgramada %></td>
-            <td><%= orden.horaInicio %></td>
-            <% if (user.rol !== 'cliente') { %>
-              <td><%= orden.nombreCliente %></td>
-              <td><%= orden.nombreSede %></td>
-            <% } %>
-            <td><%= orden.nombreTecnico %></td>
-            <td>
-              <% if (orden.estado === 'Por ejecutar') { %>
-                <span class="badge badge--ejecutar">Por ejecutar</span>
-              <% } else if (orden.estado === 'Finalizado') { %>
-                <span class="badge badge--finalizado">Finalizado</span>
-              <% } else if (orden.estado === 'En proceso') { %>
-                <span class="badge badge--proceso">En proceso</span>
-              <% } else { %>
-                <span class="badge badge--cancelado">Cancelado</span>
-              <% } %>
-            </td>
-            <td>
-              <div class="table-actions">
-                <!-- Ver: todos pueden -->
-                <a href="/ordenServicio/<%= orden.idOrden %>" class="btn-icon btn-icon--view" title="Ver">👁️</a>
-                <!-- Editar y eliminar: solo admin -->
-                <% if (user.rol === 'admin') { %>
-                  <button class="btn-icon" title="Editar">✏️</button>
-                  <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
-                <% } %>
-              </div>
-            </td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
+          <% } %>
+
+          <th>Acciones</th>
+
+        </tr>
+      </thead>
+
+<tbody>
+
+  <% ordenes.forEach(orden => { %>
+
+    <tr>
+
+      <td class="text-gold">
+        <%= orden.codigoOs.replace('OS-', '') %>
+      </td>
+
+      <td><%= orden.fechaProgramada %></td>
+
+      <% if(modoVista !== 'cliente-programacion') { %>
+        <td><%= orden.horaInicio %></td>
+      <% } %>
+
+      <% if(user.rol === 'admin' || user.rol === 'tecnico') { %>
+        <td><%= orden.nombreCliente %></td>
+      <% } %>
+
+      <% if(modoVista === 'cliente-programacion') { %>
+
+        <td><%= orden.nombreTipoServicio %></td>
+        <td><%= orden.nombreTecnico %></td>
+        <td><%= orden.nombreSede %></td>
+
+      <% } else if(modoVista === 'cliente-completados') { %>
+
+        <td><%= orden.nombreTipoServicio %></td>
+        <td><%= orden.nombreSede %></td>
+        <td><%= orden.direccionSede %></td>
+
+      <% } else { %>
+
+        <td><%= orden.nombreSede %></td>
+        <td><%= orden.nombreTecnico %></td>
+        <td><%= orden.nombreTipoServicio %></td>
+
+      <% } %>
+
+      <% if(modoVista === 'default') { %>
+        <td><%= orden.observaciones %></td>
+      <% } %>
+
+      <% if(modoVista !== 'cliente-programacion') { %>
+
+        <td>
+          <span class="estado <%= orden.estado.toLowerCase().replace(' ', '-') %>">
+            <%= orden.estado %>
+          </span>
+        </td>
+
+      <% } %>
+
+      <td>
+
+        <div class="table-actions">
+
+          <!-- ADMIN -->
+          <% if(user.rol === 'admin') { %>
+
+            <button class="btn-icon"
+              onclick="abrirModalVer(
+              '<%= orden.codigoOs %>',
+              '<%= orden.fechaProgramada %>',
+              '<%= orden.horaInicio %>',
+              '<%= orden.nombreCliente %>',
+              '<%= orden.nombreSede %>',
+              '<%= orden.nombreTecnico %>',
+              '<%= orden.nombreTipoServicio %>',
+              `<%= orden.observaciones || '' %>`,
+              '<%= orden.estado %>'
+              )">
+              👁️
+            </button>
+
+            <button class="btn-icon"
+              onclick="abrirModalEditar(
+                '<%= orden.idOrden %>',
+                '<%= orden.fechaProgramada %>',
+                '<%= orden.horaInicio %>',
+                '<%= orden.nombreCliente %>',
+                '<%= orden.nombreSede %>',
+                '<%= orden.nombreTecnico %>',
+                '<%= orden.nombreTipoServicio %>',
+                `<%= orden.observaciones ? orden.observaciones : '' %>`
+              )">
+              ✏️
+            </button>
+
+          <% } %>
+
+          <!-- TÉCNICO -->
+          <% if(user.rol === 'tecnico') { %>
+
+            <a href="/formulario/<%= orden.idOrden %>" class="btn-icon">
+              👁️
+            </a>
+
+          <% } %>
+
+          <!-- CLIENTE -->
+          <% if(user.rol === 'cliente') { %>
+
+            <button class="btn-icon"
+            onclick="abrirModalVer(
+              '<%= orden.codigoOs %>',
+              '<%= orden.fechaProgramada %>',
+              '<%= orden.horaInicio %>',
+              '<%= orden.nombreCliente %>',
+              '<%= orden.nombreSede %>',
+              '<%= orden.direccionSede %>',
+              '<%= orden.nombreTecnico %>',
+              '<%= orden.nombreTipoServicio %>',
+              `<%= orden.observaciones || "" %>`,
+              '<%= orden.estado %>'
+            )">
+              👁️
+            </button>
+
+          <% } %>
+
+        </div>
+
+      </td>
+
+    </tr>
+
+  <% }) %>
+
+</tbody>
+</table>
+
+  </div>
+</div>
 
   </main>
 </div>
+
+<!-- MODAL CREAR -->
+
+<div id="modalCrear" class="modal hidden">
+  <div class="modal-overlay" onclick="cerrarModal()"></div>
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Crear Nueva Orden de Servicio</h3>
+      <span class="modal-close" onclick="cerrarModal()">✕</span>
+    </div>
+
+<form class="modal-form" action="/ordenServicio" method="POST">
+
+  <div class="form-row">
+    <div>
+      <label>Fecha</label>
+      <input type="date" name="fechaProgramada" required>
+    </div>
+
+    <div>
+      <label>Hora</label>
+      <input type="time" name="horaInicio" required>
+    </div>
+  </div>
+
+  <label>Cliente</label>
+  <select name="nombreCliente" required>
+    <option value="">Seleccionar Cliente</option>
+    <option>Hotel Metropol</option>
+    <option>El buen sabor</option>
+  </select>
+
+  <label>Sede</label>
+  <select name="nombreSede" required>
+    <option value="">Seleccionar Sede</option>
+    <option>Sede Principal</option>
+    <option>Kennedy</option>
+    <option>Norte</option>
+  </select>
+
+  <label>Técnico</label>
+  <select name="nombreTecnico" required>
+    <option value="">Seleccionar Técnico</option>
+    <option>Carlos Rodriguez</option>
+    <option>Mario Gonzalez</option>
+  </select>
+
+  <label>Tipo de Servicio</label>
+  <select name="nombreTipoServicio" required>
+    <option value="">Seleccionar Tipo</option>
+    <option>Control de Roedores</option>
+    <option>Desinfección</option>
+    <option>Fumigación Integral</option>
+  </select>
+
+  <label>Observaciones</label>
+  <input type="text" name="observaciones">
+
+  <button type="submit" class="btn btn--primary">Crear Servicio</button>
+
+</form>
+
+  </div>
+</div>
+
+<!-- MODAL SOLICITAR SERVICIO -->
+
+<div id="modalSolicitud" class="modal hidden">
+
+  <div class="modal-overlay"
+       onclick="cerrarModalSolicitud()">
+  </div>
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+
+      <h3>Solicitar Nuevo Servicio</h3>
+
+      <span class="modal-close"
+            onclick="cerrarModalSolicitud()">
+        ✕
+      </span>
+
+    </div>
+
+    <form class="modal-form" onsubmit="mostrarSolicitudExitosa(event)">
+
+      <div class="form-row">
+
+        <div>
+          <label>Fecha Sugerida</label>
+          <input type="date" required>
+        </div>
+
+        <div>
+          <label>Hora Sugerida</label>
+          <input type="time" required>
+        </div>
+
+      </div>
+
+      <div class="form-row">
+
+        <div>
+          <label>Dirección</label>
+          <input type="text">
+        </div>
+
+        <div>
+          <label>Sede</label>
+          <input type="text">
+        </div>
+
+      </div>
+
+      <label>Contacto</label>
+      <input type="text">
+
+      <label>Descripción del problema</label>
+      <input type="text">
+
+      <label>Prioridad</label>
+
+      <select>
+        <option>Baja</option>
+        <option>Media</option>
+        <option>Alta</option>
+      </select>
+
+      <button type="submit"
+              class="btn btn--primary">
+
+        Solicitar Servicio
+
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- MODAL ÉXITO SOLICITUD -->
+
+<div id="modalSolicitudExitosa" class="modal hidden">
+
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content modal-exito">
+
+    <div class="exito-icon">✓</div>
+
+    <h2>
+      ¡Servicio Solicitado correctamente!
+    </h2>
+
+    <p class="texto-exito">
+      Este servicio será enviado como solicitud
+    </p>
+
+    <p class="texto-exito">
+      No quedará programado hasta que el administrador lo apruebe.
+    </p>
+
+    <button
+      class="btn btn--primary"
+      onclick="cerrarModalSolicitudExitosa()"
+    >
+      Cerrar
+    </button>
+
+  </div>
+
+</div>
+
+<!-- MODAL VER -->
+
+<div id="modalVer" class="modal hidden">
+  <div class="modal-overlay" onclick="cerrarModalVer()"></div>
+
+  <div class="modal-content modal-ver">
+
+    <!-- HEADER -->
+    <div class="modal-ver-header">
+      <h3 id="verOS">OS-001</h3>
+      <span id="verEstado" class="estado-badge"></span>
+    </div>
+
+    <!-- GRID -->
+    <div class="modal-ver-grid">
+
+      <div class="card">
+        <span>📅 Fecha</span>
+        <strong id="verFecha"></strong>
+      </div>
+
+      <div class="card">
+        <span>🕐 Hora</span>
+        <strong id="verHora"></strong>
+      </div>
+
+      <% if(modoVista !== 'cliente-programacion') { %>
+
+      <div class="card full">
+        <span>👤 Cliente</span>
+        <strong id="verCliente"></strong>
+      </div>
+
+      <% } %>
+
+      <% if(modoVista === 'cliente-programacion') { %>
+
+      <div class="card full">
+        <span>📍 Ubicación</span>
+        <strong id="verUbicacion"></strong>
+      </div>
+
+      <% } else { %>
+
+      <div class="card full">
+        <span>📍 Sede</span>
+        <strong id="verSede"></strong>
+      </div>
+
+      <% } %>
+
+      <div class="card full">
+        <span>🔧 Técnico</span>
+        <strong id="verTecnico"></strong>
+      </div>
+
+      <% if(modoVista !== 'cliente-programacion') { %>
+
+      <div class="card full">
+        <span>⚙️ Tipo de Servicio</span>
+        <strong id="verTipoServicio"></strong>
+      </div>
+
+      <% } %>
+
+      <div class="card full">
+        <span>📝 Observaciones</span>
+        <strong id="verObs"></strong>
+      </div>
+
+    </div>
+
+    <!-- BOTÓN -->
+    <button class="btn btn--primary" onclick="cerrarModalVer()">
+      Cerrar
+    </button>
+
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+
+<div id="modalEditar" class="modal hidden">
+  <div class="modal-overlay" onclick="cerrarModalEditar()"></div>
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>Editar Orden de Servicio</h3>
+      <span class="modal-close" onclick="cerrarModalEditar()">✕</span>
+    </div>
+
+    <form id="formEditar" class="modal-form" method="POST">
+
+      <!-- 🔥 MISMA FILA QUE CREAR -->
+      <div class="form-row">
+        <div>
+          <label>Fecha</label>
+          <input type="date" name="fechaProgramada" id="editFecha" required>
+        </div>
+
+        <div>
+          <label>Hora</label>
+          <input type="time" name="horaInicio" id="editHora" required>
+        </div>
+      </div>
+
+      <!-- 🔥 SELECTS IGUALES -->
+      <label>Cliente</label>
+      <select id="editCliente" name="nombreCliente" required>
+        <option>Hotel Metropol</option>
+        <option>El buen sabor</option>
+      </select>
+
+      <label>Sede</label>
+      <select id="editSede" name="nombreSede" required>
+        <option>Sede Principal</option>
+        <option>Kennedy</option>
+        <option>Norte</option>
+      </select>
+
+      <label>Técnico</label>
+      <select id="editTecnico" name="nombreTecnico" required>
+        <option>Carlos Rodriguez</option>
+        <option>Mario Gonzalez</option>
+      </select>
+
+      <label>Tipo de Servicio</label>
+      <select id="editTipoServicio" name="nombreTipoServicio" required>
+        <option>Fumigación Integral</option>
+        <option>Control de Roedores</option>
+        <option>Desinfección</option>
+      </select>
+
+      <label>Observaciones</label>
+      <input type="text" id="editObs" name="observaciones">
+
+      <button type="submit" class="btn btn--primary">
+        Guardar Cambios
+      </button>
+
+    </form>
+
+  </div>
+</div>
+
+<div id="modalExito" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content modal-exito">
+
+    <div class="exito-icon">✓</div>
+
+    <h2 id="mensajeExito">
+      ¡Servicio Creado correctamente!
+    </h2>
+
+    <button class="btn btn--primary" onclick="cerrarModalExito()">
+      Cerrar
+    </button>
+
+  </div>
+</div>
+
+<!-- JS -->
+
+<script>
+function abrirModal(){ document.getElementById('modalCrear').classList.remove('hidden'); }
+function cerrarModal(){ document.getElementById('modalCrear').classList.add('hidden'); }
+
+function abrirModalSolicitud(){
+
+  document
+    .getElementById('modalSolicitud')
+    .classList.remove('hidden');
+
+}
+
+function mostrarSolicitudExitosa(event){
+
+  event.preventDefault();
+
+  cerrarModalSolicitud();
+
+  document
+    .getElementById("modalSolicitudExitosa")
+    .classList.remove("hidden");
+
+}
+
+function cerrarModalSolicitudExitosa(){
+
+  document
+    .getElementById("modalSolicitudExitosa")
+    .classList.add("hidden");
+
+}
+
+function cerrarModalSolicitud(){
+
+  document
+    .getElementById('modalSolicitud')
+    .classList.add('hidden');
+
+}
+
+function abrirModalVer(
+  os,
+  fecha,
+  hora,
+  cliente,
+  sede,
+  direccion,
+  tecnico,
+  tipo,
+  obs,
+  estado
+){
+
+  document.getElementById("verOS").textContent = os;
+  document.getElementById("verFecha").textContent = fecha;
+  document.getElementById("verHora").textContent = hora;
+
+  if(document.getElementById("verCliente")){
+    document.getElementById("verCliente").textContent = cliente;
+  }
+
+  if(document.getElementById("verSede")){
+    document.getElementById("verSede").textContent = sede;
+  }
+
+  if(document.getElementById("verUbicacion")){
+    document.getElementById("verUbicacion").textContent = sede + " - " + direccion;
+  }
+
+  if(document.getElementById("verTecnico")){
+    document.getElementById("verTecnico").textContent = tecnico;
+  }
+
+  if(document.getElementById("verTipoServicio")){
+    document.getElementById("verTipoServicio").textContent = tipo;
+  }
+
+  document.getElementById("verObs").textContent =
+    obs || 'Sin observaciones';
+
+  const estadoBadge = document.getElementById("verEstado");
+
+  estadoBadge.textContent = estado;
+
+  estadoBadge.className = "estado-badge";
+
+  if (estado === "Por ejecutar"){
+    estadoBadge.classList.add("estado-pendiente");
+  }
+
+  if (estado === "Finalizado"){
+    estadoBadge.classList.add("estado-ok");
+  }
+
+  if (estado === "En proceso"){
+    estadoBadge.classList.add("estado-proceso");
+  }
+
+  document.getElementById("modalVer").classList.remove("hidden");
+}
+
+function cerrarModalVer(){ document.getElementById("modalVer").classList.add("hidden"); }
+
+function abrirModalEditar(id, fecha, hora, cliente, sede, tecnico, tipo, obs){
+
+  document.getElementById('modalEditar').classList.remove('hidden');
+
+  document.getElementById('editFecha').value = fecha.split('T')[0];
+  document.getElementById('editHora').value = hora;
+
+  document.getElementById('editCliente').value = cliente;
+  document.getElementById('editSede').value = sede;
+  document.getElementById('editTecnico').value = tecnico;
+  document.getElementById('editTipoServicio').value = tipo;
+
+  document.getElementById('editObs').value = obs || '';
+
+  document.getElementById('formEditar').action = '/ordenServicio/editar/${id}';
+}
+
+function cerrarModalEditar(){ document.getElementById('modalEditar').classList.add('hidden'); }
+</script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const modalExito = document.getElementById("modalExito");
+const mensaje = document.getElementById("mensajeExito");
+
+if (params.get("creado") === "true") {
+  mensaje.textContent = "¡Servicio Creado correctamente!";
+  modalExito.classList.remove("hidden");
+}
+
+if (params.get("editado") === "true") {
+  mensaje.textContent = "¡Cambios Guardados correctamente!";
+  modalExito.classList.remove("hidden");
+}
+
+function cerrarModalExito() {
+  modalExito.classList.add("hidden");
+  window.history.replaceState({}, document.title, "/ordenServicio");
+}
+</script>
+
 </body>
 </html>

@@ -1,20 +1,20 @@
 // export const login = (req, res) => {
 //     const { usuario, password, rol } = req.body;
 
-//     // Validación básica (puedes conectar a BD después)
+//     // Validación básica
 //     if (!usuario || !password || !rol) {
 //         return res.redirect('/login');
 //     }
 
-//     // 🔥 AQUÍ GUARDAS TODO EN SESIÓN
-//     req.session.usuario = {
+//     // 🔥 GUARDAR USUARIO EN SESIÓN
+//     req.session.user = {
 //         nombre: usuario,
 //         rol: rol,
 //         email: usuario + "@correo.com",
 //         telefono: "3000000000"
 //     };
 
-//     // Redirección por rol
+//     // 🔥 REDIRECCIÓN POR ROL
 //     if (rol === 'admin') {
 //         return res.redirect('/dashboard/admin');
 //     }

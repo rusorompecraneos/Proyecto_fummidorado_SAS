@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reportes</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+
+<div class="layout-full">
+  <main class="main-content">
+
+    <!-- HEADER -->
+    <div class="hifi-header">
+      <div class="hifi-title">
+        <a href="/dashboard/admin" class="back-arrow">←</a>
+
+        <div>
+          <h2>Documentos y Soportes</h2>
+          <p>Consulta los reportes generados por los técnicos</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="hifi-content">
+      <div class="table-wrapper">
+
+        <table>
+          <thead>
+            <tr>
+              <th>OS</th>
+              <th>Cliente</th>
+              <th>Técnico Asignado</th>
+              <th>Tipo de Documento</th>
+              <th>Evidencias</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% formularios.forEach(f => { %>
+            <tr>
+
+              <td class="text-gold">
+                <%= f.codigoOs.replace('OS-', '') %>
+              </td>
+
+              <td><%= f.nombreCliente %></td>
+              <td><%= f.nombreTecnico %></td>
+
+              <td>📄 <%= f.tipoDocumento %></td>
+
+              <td>
+                <% if (f.evidencias.length > 0) { %>
+                  <span class="text-green"><%= f.evidencias.length %> fotos</span>
+                <% } else { %>
+                  <span class="text-muted">Sin fotos</span>
+                <% } %>
+              </td>
+
+              <td>
+                <div class="table-actions">
+
+                  <div class="table-actions">
+
+                    <!-- VER -->
+                    <button class="btn-icon ver-btn"
+                        data-os="<%= f.codigoOs %>"
+                        data-cliente="<%= f.nombreCliente %>"
+                        data-tecnico="<%= f.nombreTecnico %>"
+                        data-fecha="<%= f.fecha %>"
+                        data-hora="<%= f.hora %>"
+                        data-areas="<%= f.areas.join(',') %>"
+                        data-plagas="<%= f.plagas.join(',') %>"
+                        data-obs="<%= f.observaciones %>"
+                        data-fotos="<%= f.evidencias.length %>"
+                    >
+                        👁️
+                    </button>
+
+                    <!-- 🔥 DESCARGAR -->
+                    <button 
+                        class="btn-icon btn-icon--download"
+                        title="Descargar"
+                        onclick="abrirModalDescarga()"
+                    >
+                        ⬇️
+                    </button>
+
+                    </div>
+
+                </div>
+              </td>
+
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ================= MODAL DETALLE ================= -->
+<div id="modalReporte" class="modal hidden">
+
+  <div class="modal-overlay" onclick="cerrarModal()"></div>
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>Detalle del Servicio</h3>
+      <span class="modal-close" onclick="cerrarModal()">✕</span>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="modal-body">
+
+  <!-- 🔥 CARD DATOS GENERALES -->
+  <div class="reporte-card">
+
+    <div class="reporte-card__title">
+      📄 1. Datos Generales
+    </div>
+
+    <div class="reporte-grid">
+
+      <div><span>OS</span><strong id="rOS"></strong></div>
+      <div><span>Cliente</span><strong id="rCliente"></strong></div>
+      <div><span>Sede</span><strong id="rSede">Sede Principal</strong></div>
+
+      <div><span>Área</span><strong id="rAreas"></strong></div>
+      <div><span>Fecha</span><strong id="rFecha"></strong></div>
+      <div><span>Hora</span><strong id="rHora"></strong></div>
+
+      <div><span>Técnico</span><strong id="rTecnico"></strong></div>
+
+    </div>
+
+  </div>
+
+  <!-- 🔥 CARD PLAGAS -->
+  <div class="reporte-card">
+
+    <div class="reporte-card__title">
+      🐜 Inspección del Servicio
+    </div>
+
+    <div class="chips-container" id="rPlagas"></div>
+
+  </div>
+
+  <!-- 🔥 CARD OBS -->
+  <div class="reporte-card">
+
+    <div class="reporte-card__title">
+      📝 Observaciones
+    </div>
+
+    <div class="obs-box" id="rObs"></div>
+
+  </div>
+
+  <!-- 🔥 CARD FOTOS -->
+  <div class="reporte-card">
+
+    <div class="reporte-card__title">
+      📸 Evidencia Fotográfica
+    </div>
+
+    <div class="fotos-grid" id="rFotos"></div>
+
+  </div>
+
+</div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODAL DESCARGA ================= -->
+<div id="modalDescarga" class="modal hidden">
+
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content modal-success">
+
+    <div class="success-icon">
+      ⬇️
+    </div>
+
+    <h2>¡Documento descargado correctamente!</h2>
+
+    <button class="btn btn--primary" onclick="cerrarModalDescarga()">
+      Cerrar
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+
+document.querySelectorAll(".ver-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+
+    document.getElementById("modalReporte").classList.remove("hidden");
+
+    document.getElementById("rOS").textContent = btn.dataset.os;
+    document.getElementById("rCliente").textContent = btn.dataset.cliente;
+    document.getElementById("rTecnico").textContent = btn.dataset.tecnico;
+    document.getElementById("rFecha").textContent = btn.dataset.fecha;
+    document.getElementById("rHora").textContent = btn.dataset.hora;
+
+    document.getElementById("rAreas").textContent = btn.dataset.areas || "No aplica";
+    // PLAGAS COMO CHIPS
+    const plagasContainer = document.getElementById("rPlagas");
+    plagasContainer.innerHTML = "";
+
+    if (btn.dataset.plagas) {
+    btn.dataset.plagas.split(",").forEach(p => {
+        if(p.trim() !== ""){
+        plagasContainer.innerHTML += `<span class="chip">${p}</span>`;
+        }
+    });
+    } else {
+    plagasContainer.innerHTML = "No aplica";
+    }
+
+    // OBS
+    document.getElementById("rObs").textContent =
+    btn.dataset.obs || "Sin observaciones";
+
+    // FOTOS
+    const fotos = document.getElementById("rFotos");
+    fotos.innerHTML = "";
+
+    let cantidad = btn.dataset.fotos || 0;
+
+    for(let i = 1; i <= cantidad; i++){
+    fotos.innerHTML += `<div class="foto">Foto ${i}</div>`;
+    }
+    document.getElementById("rObs").textContent = btn.dataset.obs || "Sin observaciones";
+
+  });
+});
+
+function cerrarModal(){
+  document.getElementById("modalReporte").classList.add("hidden");
+}
+
+function abrirModalDescarga() {
+  document.getElementById("modalDescarga").classList.remove("hidden");
+}
+
+function cerrarModalDescarga() {
+  document.getElementById("modalDescarga").classList.add("hidden");
+}
+
+
+</script>
+
+</body>
+</html>

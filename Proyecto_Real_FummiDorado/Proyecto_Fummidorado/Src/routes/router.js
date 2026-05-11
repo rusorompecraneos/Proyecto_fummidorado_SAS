@@ -2,73 +2,134 @@ import { Router } from "express";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 
 import { listarTiposServicio } from "../controllers/tipoServicioController.js";
-import { listarProductos } from "../controllers/productoController.js";
-import { listarOrdenes, verOrden } from "../controllers/ordenServicioController.js";
-import { listarFormularios, verFormulario, editarFormulario, guardarFormulario } from "../controllers/formularioController.js";
+
+import {
+  listarProductos,
+  crearProducto,
+  editarProducto,
+  eliminarProducto
+} from "../controllers/productoController.js";
+
+import { 
+  listarOrdenes, 
+  verOrden, 
+  crearOrden,
+  mostrarEditar,
+  editarOrden,
+  resumenServicios
+} from "../controllers/ordenServicioController.js";
+
+import {
+  verFormulario
+} from "../controllers/formularioController.js";
+
+// 🔥 NUEVO (REPORTES)
+import { listarReportes } from "../controllers/reporteController.js";
 
 const router = Router();
 
-// Ruta principal
-router.get('/', (request, response) => {
-    response.redirect('/login');
+// ── Ruta principal ─────────────────────────────
 router.get('/', (req, res) => {
-    if (!req.session.user) return res.redirect('/login');
-    res.redirect(`/dashboard/${req.session.user.rol}`);
+  if (!req.session.user) return res.redirect('/login');
+  res.redirect(`/dashboard/${req.session.user.rol}`);
 });
 
-// ── Tipos de Servicio: solo admin ─────────────────────────────
+// ── Tipos de Servicio ─────────────────────────
 router.get('/tipoServicio',
-    requireAuth,
-    requireRole('admin'),
-    listarTiposServicio
+  requireAuth,
+  requireRole('admin'),
+  listarTiposServicio
 );
 
-// ── Productos: solo admin ─────────────────────────────────────
+// ── Productos ─────────────────────────────────
 router.get('/producto',
-    requireAuth,
-    requireRole('admin'),
-    listarProductos
+  requireAuth,
+  requireRole('admin'),
+  listarProductos
 );
 
-// ── Órdenes de Servicio: admin, técnico y cliente ─────────────
+router.post('/producto',
+  requireAuth,
+  requireRole('admin'),
+  crearProducto
+);
+
+router.post('/producto/editar/:id',
+  requireAuth,
+  requireRole('admin'),
+  editarProducto
+);
+
+router.get('/producto/eliminar/:id',
+  requireAuth,
+  requireRole('admin'),
+  eliminarProducto
+);
+
+// ── Órdenes de Servicio ───────────────────────
+
+// LISTAR
 router.get('/ordenServicio',
-    requireAuth,
-    requireRole('admin', 'tecnico', 'cliente'),
-    listarOrdenes
+  requireAuth,
+  requireRole('admin', 'tecnico', 'cliente'),
+  listarOrdenes
 );
 
+// CREAR
+router.post('/ordenServicio',
+  requireAuth,
+  requireRole('admin'),
+  crearOrden
+);
+
+// VER DETALLE
 router.get('/ordenServicio/:id',
-    requireAuth,
-    requireRole('admin', 'tecnico', 'cliente'),
-    verOrden
+  requireAuth,
+  requireRole('admin', 'tecnico', 'cliente'),
+  verOrden
 );
 
-// ── Formularios: admin, técnico y cliente ─────────────────────
-router.get('/formulario',
-    requireAuth,
-    requireRole('admin', 'tecnico', 'cliente'),
-    listarFormularios
+// MOSTRAR EDITAR
+router.get('/ordenServicio/editar/:id',
+  requireAuth,
+  requireRole('admin'),
+  mostrarEditar
 );
+
+// GUARDAR EDICIÓN
+router.post('/ordenServicio/editar/:id',
+  requireAuth,
+  requireRole('admin'),
+  editarOrden
+);
+
+// ── Formulario Técnico ───────────────────────
 
 router.get('/formulario/:id',
-    requireAuth,
-    requireRole('admin', 'tecnico', 'cliente'),
-    verFormulario
+
+  requireAuth,
+  requireRole('admin', 'tecnico'),
+
+  verFormulario
+
 );
 
-// Editar formulario: solo admin y técnico
-router.get('/formulario/:id/editar',
-    requireAuth,
-    requireRole('admin', 'tecnico'),
-    editarFormulario
+// ── Reportes ──────────────────────────────────
+
+// 🔥 NUEVA VISTA DE REPORTES
+router.get('/reportes',
+  requireAuth,
+  requireRole('admin'),
+  listarReportes
 );
 
-router.post('/formulario/:id/editar',
+// ── RESUMEN SERVICIOS TÉCNICO ─────────────────────
+
+router.get('/tecnico/resumen',
     requireAuth,
-    requireRole('admin', 'tecnico'),
-    guardarFormulario
+    requireRole('tecnico'),
+    resumenServicios
 );
+
 
 export default router;
-
-

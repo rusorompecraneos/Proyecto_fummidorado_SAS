@@ -7,93 +7,383 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<div class="layout">
 
-  <%- include('../partials/sidebar.ejs', { currentPage: 'producto' }) %>
-
+<div class="layout-full">
   <main class="main-content">
 
-    <!-- Flecha volver al dashboard -->
-    <a href="/dashboard/<%= user.rol %>" class="auth-back-link" style="margin-bottom: var(--space-4);">
-      ← Volver al dashboard
-    </a>
-
-    <!-- Encabezado -->
-    <div class="page-header">
-      <div>
-        <h2 class="page-header__title">Matriz de Rotación de Productos</h2>
-        <p class="page-header__subtitle">Programación de uso de productos por mes</p>
+    <!-- HEADER -->
+    <div class="hifi-header">
+      <div class="hifi-title">
+        <a href="/dashboard/<%= user.rol %>" class="back-arrow">←</a>
+        <div>
+          <h2>Matriz de Rotación de Productos</h2>
+          <p>Programación de uso de productos por mes</p>
+        </div>
       </div>
-      <!-- Solo admin puede registrar -->
-      <% if (user.rol === 'admin') { %>
-        <button class="btn btn--primary">+ Registrar Producto</button>
-      <% } %>
     </div>
 
-    <!-- Tabla -->
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Ingrediente Activo</th>
-            <th>Concentración</th>
-            <th>Tipo</th>
-            <th>Meses de Uso</th>
-            <th>Estado</th>
-            <!-- Solo admin ve columna acciones -->
-            <% if (user.rol === 'admin') { %>
+    <!-- BOTÓN -->
+    <% if (user.rol === 'admin') { %>
+    <div class="acciones-superiores">
+      <button class="btn btn--primary" onclick="abrirModalCrear()">
+        + Registrar Producto
+      </button>
+    </div>
+    <% } %>
+
+    <!-- TABLA -->
+    <div class="hifi-content">
+      <div class="table-wrapper table-wrapper--wide">
+
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre del producto</th>
+              <th>Composición</th>
+              <th>Tipo</th>
+              <th>Meses de Uso</th>
+              <th>Estado</th>
+              <% if (user.rol === 'admin') { %>
               <th>Acciones</th>
-            <% } %>
-          </tr>
-        </thead>
-        <tbody>
-          <% productos.forEach(producto => { %>
-          <tr>
-            <td>
-              <div><%= producto.nombre %></div>
-              <small class="text-muted"><%= producto.descripcion %></small>
-            </td>
-            <td><%= producto.ingredienteActivo %></td>
-            <td><%= producto.concentracion %></td>
-            <td>
-              <% if (producto.tipoProducto === 'Insecticida') { %>
-                <span class="badge badge--insecticida">Insecticida</span>
-              <% } else { %>
-                <span class="badge badge--rodenticida">Rodenticida</span>
               <% } %>
-            </td>
-            <td>
-              <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                <% producto.mesesUso.forEach(mes => { %>
-                  <span class="badge badge--gold"><%= mes %></span>
-                <% }) %>
-              </div>
-            </td>
-            <td>
-              <% if (producto.estado === 'Activo') { %>
-                <span class="badge badge--success">Activo</span>
-              <% } else { %>
-                <span class="badge badge--error">Inactivo</span>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% productos.forEach(producto => { %>
+            <tr>
+
+              <td>
+                <div class="producto-nombre"><%= producto.nombre %></div>
+                <div class="producto-desc"><%= producto.descripcion %></div>
+              </td>
+
+              <td>
+                <div><%= producto.ingredienteActivo %></div>
+                <strong><%= producto.concentracion %></strong>
+              </td>
+
+              <td>
+                <span class="badge <%= producto.tipoProducto === 'Insecticida' ? 'badge--insecticida' : 'badge--rodenticida' %>">
+                  <%= producto.tipoProducto %>
+                </span>
+              </td>
+
+              <td>
+                <div class="meses-container">
+                  <% if (producto.mesesUso && producto.mesesUso.length > 0) { %>
+                    <% producto.mesesUso.forEach(mes => { %>
+                      <span class="mes-chip activo"><%= mes %></span>
+                    <% }) %>
+                  <% } %>
+                </div>
+              </td>
+
+              <td>
+                <span class="estado <%= producto.estado === 'Activo' ? 'finalizado' : 'cancelado' %>">
+                  <%= producto.estado %>
+                </span>
+              </td>
+
+              <% if (user.rol === 'admin') { %>
+              <td>
+                <div class="table-actions">
+
+                  <button class="btn-icon"
+                  onclick="abrirModalEditar(
+                    '<%= producto.idProducto %>',
+                    '<%= producto.nombre %>',
+                    '<%= producto.descripcion %>',
+                    '<%= producto.ingredienteActivo %>',
+                    '<%= producto.concentracion %>',
+                    '<%= producto.tipoProducto %>',
+                    '<%= producto.mesesUso.join(',') %>'
+                  )">
+                  ✏️
+                  </button>
+
+                  <button class="btn-icon btn-icon--danger"
+                    onclick="abrirModalEliminar('<%= producto.idProducto %>')">
+                    🗑️
+                  </button>
+
+                </div>
+              </td>
               <% } %>
-            </td>
-            <!-- Acciones solo para admin -->
-            <% if (user.rol === 'admin') { %>
-            <td>
-              <div class="table-actions">
-                <button class="btn-icon btn-icon--view" title="Ver">👁️</button>
-                <button class="btn-icon" title="Editar">✏️</button>
-                <button class="btn-icon btn-icon--danger" title="Eliminar">🗑️</button>
-              </div>
-            </td>
-            <% } %>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
+
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+      </div>
     </div>
 
   </main>
 </div>
+
+<!-- ================= MODAL CREAR ================= -->
+<div id="modalCrearProducto" class="modal hidden">
+  <div class="modal-overlay" onclick="cerrarModalCrear()"></div>
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Registrar Nuevo Producto</h3>
+      <span class="modal-close" onclick="cerrarModalCrear()">✕</span>
+    </div>
+
+    <form class="modal-form" method="POST" action="/producto">
+
+      <label>Nombre</label>
+      <input type="text" name="nombre" required>
+
+      <label>Descripción</label>
+      <input type="text" name="descripcion">
+
+      <label>Ingrediente Activo</label>
+      <input type="text" name="ingredienteActivo">
+
+      <label>Concentración</label>
+      <input type="text" name="concentracion">
+
+      <label>Tipo</label>
+      <select name="tipoProducto">
+        <option>Insecticida</option>
+        <option>Rodenticida</option>
+      </select>
+
+      <label>Meses de Uso</label>
+
+      <div class="mes-selector" id="mesSelector">
+        <span data-mes="Ene">Ene</span>
+        <span data-mes="Feb">Feb</span>
+        <span data-mes="Mar">Mar</span>
+        <span data-mes="Abr">Abr</span>
+        <span data-mes="May">May</span>
+        <span data-mes="Jun">Jun</span>
+        <span data-mes="Jul">Jul</span>
+        <span data-mes="Ago">Ago</span>
+        <span data-mes="Sep">Sep</span>
+        <span data-mes="Oct">Oct</span>
+        <span data-mes="Nov">Nov</span>
+        <span data-mes="Dic">Dic</span>
+      </div>
+
+      <input type="hidden" name="mesesUso" id="mesesInput">
+
+      <button class="btn btn--primary">Registrar Producto</button>
+
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL EDITAR ================= -->
+<div id="modalEditarProducto" class="modal hidden">
+  <div class="modal-overlay" onclick="cerrarModalEditar()"></div>
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Editar Producto</h3>
+      <span class="modal-close" onclick="cerrarModalEditar()">✕</span>
+    </div>
+
+    <form id="formEditarProducto" class="modal-form" method="POST">
+
+      <label>Nombre</label>
+      <input type="text" name="nombre" id="editNombre" required>
+
+      <label>Descripción</label>
+      <input type="text" name="descripcion" id="editDescripcion">
+
+      <label>Ingrediente Activo</label>
+      <input type="text" name="ingredienteActivo" id="editIngrediente">
+
+      <label>Concentración</label>
+      <input type="text" name="concentracion" id="editConcentracion">
+
+      <label>Tipo</label>
+      <select name="tipoProducto" id="editTipo">
+        <option>Insecticida</option>
+        <option>Rodenticida</option>
+      </select>
+
+      <!-- MESES -->
+      <label>Meses de Uso</label>
+
+      <div class="mes-selector" id="mesSelectorEditar">
+        <span data-mes="Ene">Ene</span>
+        <span data-mes="Feb">Feb</span>
+        <span data-mes="Mar">Mar</span>
+        <span data-mes="Abr">Abr</span>
+        <span data-mes="May">May</span>
+        <span data-mes="Jun">Jun</span>
+        <span data-mes="Jul">Jul</span>
+        <span data-mes="Ago">Ago</span>
+        <span data-mes="Sep">Sep</span>
+        <span data-mes="Oct">Oct</span>
+        <span data-mes="Nov">Nov</span>
+        <span data-mes="Dic">Dic</span>
+      </div>
+
+      <input type="hidden" name="mesesUso" id="mesesInputEditar">
+
+      <button class="btn btn--primary">Guardar Cambios</button>
+
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL ELIMINAR ================= -->
+<div id="modalEliminarProducto" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content modal-exito">
+
+    <div class="exito-icon" style="color:red; border-color:red;">!</div>
+
+    <h2>¿Eliminar producto?</h2>
+    <p style="color:#aaa;">Esta acción no se puede deshacer</p>
+
+    <div style="display:flex; gap:10px; justify-content:center;">
+      <button onclick="cerrarModalEliminar()">Cancelar</button>
+      <button class="btn btn--primary" id="confirmEliminar">Eliminar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODAL ÉXITO ================= -->
+<div id="modalExito" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content modal-exito">
+    <div class="exito-icon">✓</div>
+    <h2 id="mensajeExito"></h2>
+    <button class="btn btn--primary" onclick="cerrarModalExito()">Cerrar</button>
+  </div>
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+
+// CREAR
+function abrirModalCrear() {
+  document.getElementById("modalCrearProducto").classList.remove("hidden");
+}
+function cerrarModalCrear() {
+  document.getElementById("modalCrearProducto").classList.add("hidden");
+}
+
+// ELIMINAR
+let idProductoEliminar = null;
+
+function abrirModalEliminar(id) {
+  idProductoEliminar = id;
+  document.getElementById("modalEliminarProducto").classList.remove("hidden");
+}
+function cerrarModalEliminar() {
+  document.getElementById("modalEliminarProducto").classList.add("hidden");
+}
+
+document.getElementById("confirmEliminar").addEventListener("click", () => {
+  window.location.href = `/producto/eliminar/${idProductoEliminar}`;
+});
+
+// MESES
+const mesesSeleccionados = [];
+
+document.querySelectorAll("#mesSelector span").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const mes = btn.dataset.mes;
+
+    if (mesesSeleccionados.includes(mes)) {
+      mesesSeleccionados.splice(mesesSeleccionados.indexOf(mes), 1);
+      btn.classList.remove("activo");
+    } else {
+      mesesSeleccionados.push(mes);
+      btn.classList.add("activo");
+    }
+
+    document.getElementById("mesesInput").value = mesesSeleccionados.join(",");
+  });
+});
+
+// ÉXITO
+const params = new URLSearchParams(window.location.search);
+const modalExito = document.getElementById("modalExito");
+const mensaje = document.getElementById("mensajeExito");
+
+if (params.get("creado") === "true") {
+  mensaje.textContent = "¡Producto Registrado Correctamente!";
+  modalExito.classList.remove("hidden");
+}
+
+if (params.get("editado") === "true") {
+  mensaje.textContent = "¡Cambios Guardados Correctamente!";
+  modalExito.classList.remove("hidden");
+}
+
+function cerrarModalExito() {
+  modalExito.classList.add("hidden");
+  window.history.replaceState({}, document.title, "/producto");
+}
+
+</script>
+
+<script>
+
+// ===== EDITAR =====
+function abrirModalEditar(id, nombre, desc, ingrediente, conc, tipo, meses){
+
+  document.getElementById("modalEditarProducto").classList.remove("hidden");
+
+  document.getElementById("editNombre").value = nombre;
+  document.getElementById("editDescripcion").value = desc;
+  document.getElementById("editIngrediente").value = ingrediente;
+  document.getElementById("editConcentracion").value = conc;
+  document.getElementById("editTipo").value = tipo;
+
+  document.getElementById("formEditarProducto").action = `/producto/editar/${id}`;
+
+  // LIMPIAR selección previa
+  const mesesArray = meses.split(",");
+
+  document.querySelectorAll("#mesSelectorEditar span").forEach(btn => {
+    btn.classList.remove("activo");
+
+    if (mesesArray.includes(btn.dataset.mes)) {
+      btn.classList.add("activo");
+    }
+  });
+
+  document.getElementById("mesesInputEditar").value = meses;
+}
+
+// CERRAR
+function cerrarModalEditar() {
+  document.getElementById("modalEditarProducto").classList.add("hidden");
+}
+
+// CLICK MESES EDITAR
+const mesesEditar = [];
+
+document.querySelectorAll("#mesSelectorEditar span").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const mes = btn.dataset.mes;
+
+    if (mesesEditar.includes(mes)) {
+      mesesEditar.splice(mesesEditar.indexOf(mes), 1);
+      btn.classList.remove("activo");
+    } else {
+      mesesEditar.push(mes);
+      btn.classList.add("activo");
+    }
+
+    document.getElementById("mesesInputEditar").value = mesesEditar.join(",");
+  });
+});
+
+</script>
+
 </body>
 </html>
