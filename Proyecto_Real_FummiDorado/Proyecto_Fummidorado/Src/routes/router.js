@@ -28,10 +28,10 @@ import { listarReportes } from "../controllers/reporteController.js";
 
 const router = Router();
 
-// ── Ruta principal ─────────────────────────────
+// Ruta principal
 router.get('/', (req, res) => {
-  if (!req.session.user) return res.redirect('/login');
-  res.redirect(`/dashboard/${req.session.user.rol}`);
+    if (!req.session.user) return res.redirect('/login');
+    res.redirect(`/dashboard/${req.session.user.rol}`);
 });
 
 // ── Tipos de Servicio ─────────────────────────
@@ -96,6 +96,13 @@ router.get('/ordenServicio/editar/:id',
   mostrarEditar
 );
 
+// ── Formularios: admin, técnico y cliente ─────────────────────
+router.get('/formulario',
+    requireAuth,
+    requireRole('admin', 'tecnico', 'cliente'),
+    listarFormularios
+);
+
 // GUARDAR EDICIÓN
 router.post('/ordenServicio/editar/:id',
   requireAuth,
@@ -131,5 +138,5 @@ router.get('/tecnico/resumen',
     resumenServicios
 );
 
-
 export default router;
+
