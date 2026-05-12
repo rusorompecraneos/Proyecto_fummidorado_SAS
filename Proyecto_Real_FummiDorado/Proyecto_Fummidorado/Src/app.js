@@ -3,6 +3,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import session from 'express-session';
+import dotenv from 'dotenv';
+
 
 import passwordRoutes from './routes/password.routes.js';
 import appRouter from "./routes/router.js";
@@ -11,6 +13,8 @@ import tecnicoRoutes from './routes/tecnico.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 
 // 
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
