@@ -1,5 +1,8 @@
 import express from 'express';
-import { join, resolve } from "path";
+import path from 'path';
+import { join } from "path";
+import { fileURLToPath } from 'url';
+
 import passwordRoutes from './routes/password.routes.js';
 import appRouter from "./routes/router.js";
 import clienteRoutes from './routes/cliente.routes.js';
@@ -7,13 +10,19 @@ import tecnicoRoutes from './routes/tecnico.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 
 
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3000;
-app.set("view engine", 'ejs');
-app.set("views", "views")
-app.use(express.static(join("./public")))
+const port = process.env.PORT || 3000;
+
+// Cambiado para el despliegue
+//app.set("view engine", 'ejs');
+// app.set("views", "views")
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
 // Gestion de servicios, admin. 
@@ -89,4 +98,3 @@ app.post('/usuario/login', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running 🚀 at http://localhost:${port}`);
 });
-// Comentario
