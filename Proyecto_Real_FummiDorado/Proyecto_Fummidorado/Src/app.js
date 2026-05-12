@@ -35,7 +35,7 @@ app.set('view engine', 'ejs');
 
 // codigo de verifiacion
 app.use(session({
-  secret: process.env.JWT_SECRET,
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 10 * 60 * 1000 } // 10 minutos
