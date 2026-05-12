@@ -1,6 +1,5 @@
 import express from 'express';
 import path from 'path';
-import { join } from "path";
 import { fileURLToPath } from 'url';
 
 import passwordRoutes from './routes/password.routes.js';
@@ -22,8 +21,9 @@ const port = process.env.PORT || 3000;
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
+
 
 // Gestion de servicios, admin. 
 app.use('/admin', adminRoutes);
