@@ -23,7 +23,7 @@ let clientesMock = [
     sedes: 1
   }
 ];
-
+// comentarios
 let nextId = 3;
 
 const obtenerTodos = () => clientesMock;
