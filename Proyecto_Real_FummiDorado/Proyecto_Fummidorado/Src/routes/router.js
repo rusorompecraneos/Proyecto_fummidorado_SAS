@@ -96,13 +96,6 @@ router.get('/ordenServicio/editar/:id',
   mostrarEditar
 );
 
-// ── Formularios: admin, técnico y cliente ─────────────────────
-router.get('/formulario',
-    requireAuth,
-    requireRole('admin', 'tecnico', 'cliente'),
-    listarFormularios
-);
-
 // GUARDAR EDICIÓN
 router.post('/ordenServicio/editar/:id',
   requireAuth,
