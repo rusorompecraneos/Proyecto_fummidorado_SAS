@@ -3,7 +3,6 @@
 import express from 'express';
 import { Router } from "express";
 import tecnicoController from '../controllers/tecnico.controller.js';
-import mapaController from '../controllers/mapaController.js';
 
 
 const router = express.Router();
