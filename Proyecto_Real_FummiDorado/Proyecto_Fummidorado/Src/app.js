@@ -39,19 +39,19 @@ app.use("/", appRouter);
 
 
 app.get('/login', (req, res) => {
-  res.render('usuario/login');
+  res.render('Usuario/login');
 });
 
 app.get('/dashboard/tecnico', (req, res) => {
-  res.render('usuario/dashboards/tecnico');
+  res.render('Usuario/dashboards/tecnico');
 });
 
 app.get('/dashboard/admin', (req, res) => {
-  res.render('usuario/dashboards/admin');
+  res.render('Usuario/dashboards/admin');
 });
 
 app.get('/dashboard/cliente', (req, res) => {
-  res.render('usuario/dashboards/cliente');
+  res.render('Usuario/dashboards/cliente');
 });
 
 app.get('/usuario/logout', (req, res) => {
