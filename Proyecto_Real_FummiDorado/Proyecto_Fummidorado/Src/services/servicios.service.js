@@ -48,9 +48,7 @@ const serviciosMock = [
     direccion: 'Residencias, Las Flores',
     tecnico: 'Mario Gonzalez',
     tipo: 'Fumigacion Preventiva',
-    estado: 'Pendiente',
-    lat: 4.6500,
-    lng: -74.0800
+    estado: 'Pendiente'
   }
 ];
 

@@ -21,8 +21,9 @@ const port = process.env.PORT || 3000;
 // MAPA DEL TECNICO
 app.use('/tecnico', tecnicoRoutes);
 
+ 
 // Cambiado para el despliegue
-//app.set("view engine", 'ejs');
+// app.set("view engine", 'ejs');
 // app.set("views", "views")
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
