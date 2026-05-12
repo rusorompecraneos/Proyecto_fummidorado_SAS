@@ -9,7 +9,7 @@ import clienteRoutes from './routes/cliente.routes.js';
 import tecnicoRoutes from './routes/tecnico.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 
-
+// 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
