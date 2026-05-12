@@ -38,30 +38,30 @@ app.get('/usuario/logout', cerrarSesion);
 // ── Dashboards ───────────────────────
 app.get('/dashboard/admin', (req, res) => {
     if (!req.session.user || req.session.user.rol !== 'admin') return res.redirect('/login');
-    res.render('usuario/dashboards/admin');
+    res.render('Usuario/dashboards/admin');
 });
 
 app.get('/dashboard/tecnico', (req, res) => {
     if (!req.session.user || req.session.user.rol !== 'tecnico') return res.redirect('/login');
-    res.render('usuario/dashboards/tecnico');
+    res.render('Usuario/dashboards/tecnico');
 });
 
 app.get('/dashboard/cliente', (req, res) => {
     if (!req.session.user || req.session.user.rol !== 'cliente') return res.redirect('/login');
-    res.render('usuario/dashboards/cliente');
+    res.render('Usuario/dashboards/cliente');
 });
 
 // ── Perfiles ─────────────────────────
 app.get('/usuario/perfil/cliente', (req, res) => {
-    res.render('usuario/perfil/perfil_cliente');
+    res.render('Usuario/perfil/perfil_cliente');
 });
 
 app.get('/usuario/perfil/tecnico', (req, res) => {
-    res.render('usuario/perfil/perfil_tecnico');
+    res.render('Usuario/perfil/perfil_tecnico');
 });
 
 app.get('/usuario/perfil/admin', (req, res) => {
-    res.render('usuario/perfil/perfil_admin');
+    res.render('Usuario/perfil/perfil_admin');
 });
 
 app.use(express.urlencoded({ extended: true }));
