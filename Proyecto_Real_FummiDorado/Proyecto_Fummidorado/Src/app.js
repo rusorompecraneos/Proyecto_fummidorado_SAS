@@ -1,6 +1,8 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import 'dotenv/config';
+import session from 'express-session';
 
 import passwordRoutes from './routes/password.routes.js';
 import appRouter from "./routes/router.js";
@@ -21,6 +23,15 @@ const port = process.env.PORT || 3000;
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
+
+// codigo de verifiacion
+app.use(session({
+  secret: process.env.JWT_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 10 * 60 * 1000 } // 10 minutos
+}));
+
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,6 +45,8 @@ app.use('/Usuario/cliente', clienteRoutes);
 app.use('/documentosTecnicoCliente', tecnicoRoutes);
 
 app.use('/password', passwordRoutes);
+
+
 
 app.use("/", appRouter);
 

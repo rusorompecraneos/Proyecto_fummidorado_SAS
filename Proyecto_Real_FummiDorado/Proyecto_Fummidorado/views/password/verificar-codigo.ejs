@@ -18,6 +18,12 @@
         </p>
         <p class="text-gold" style="font-weight: 600;">+57 **********</p>
       </div>
+      
+       <% if (error) { %>
+        <div class="alert alert--error" style="margin-bottom: var(--space-4);">
+          ⚠ <%= error %>
+        </div>
+      <% } %>
 
       <form class="auth-card__form" action="/password/verificar" method="POST">
         <div class="form-group">
@@ -37,9 +43,14 @@
         </button>
       </form>
 
+
       <div class="text-center">
         <p class="auth-card__subtitle">¿No recibiste el código?</p>
-        <a href="/password/recuperar" class="auth-link">Reenviar código</a>
+        <form action="/password/reenviar" method="POST" style="display:inline;">
+          <button type="submit" class="auth-link" style="background:none; border:none; cursor:pointer; font-size: var(--text-sm);">
+            Reenviar código
+          </button>
+        </form>
       </div>
 
     </div>
