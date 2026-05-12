@@ -9,7 +9,9 @@ const serviciosMock = [
     direccion: 'Avenida Principal 123, Chapinero',
     tecnico: 'Carlos Rodriguez',
     tipo: 'Fumigacion Integral',
-    estado: 'Completado'
+    estado: 'Completado',
+    lat: 4.6690,
+    lng: -74.0600
   },
   {
     id: '002',
@@ -20,7 +22,9 @@ const serviciosMock = [
     direccion: 'Cra 7 #34-92 sur, Calera',
     tecnico: 'Mario Gonzalez',
     tipo: 'Control de roedores',
-    estado: 'Completado'
+    estado: 'Completado',
+    lat: 4.6400,
+    lng: -74.1540
   },
   {
     id: '003',
@@ -31,7 +35,9 @@ const serviciosMock = [
     direccion: 'Industrial Park, Fontibon',
     tecnico: 'Carlos Rodriguez',
     tipo: 'Desinfección',
-    estado: 'Pendiente'
+    estado: 'Pendiente',
+    lat: 4.6980,
+    lng: -74.1500
   },
   {
     id: '004',
@@ -42,7 +48,9 @@ const serviciosMock = [
     direccion: 'Residencias, Las Flores',
     tecnico: 'Mario Gonzalez',
     tipo: 'Fumigacion Preventiva',
-    estado: 'Pendiente'
+    estado: 'Pendiente',
+    lat: 4.6500,
+    lng: -74.0800
   }
 ];
 

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fumi Dorado — Mapa de Servicios</title>
+
+  <!-- CSS global del proyecto -->
+  <link rel="stylesheet" href="/css/styles.css"/>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <style>
+    /* ── Página ────────────────────────────────────────────── */
+    body { background: var(--color-bg); }
+
+    .mapa-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header con botón volver ───────────────────────────── */
+    .mapa-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-5) var(--space-8);
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border-gold);
+    }
+
+    .mapa-header__back {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text);
+      font-size: 20px;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .mapa-header__back:hover { color: var(--color-gold); }
+
+    .mapa-header__info h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semi);
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+    .mapa-header__info p {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    /* ── Contenido principal ───────────────────────────────── */
+    .mapa-body {
+      flex: 1;
+      padding: var(--space-6) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Leyenda ───────────────────────────────────────────── */
+    .mapa-legend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .mapa-legend__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+
+    .mapa-legend__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .mapa-legend__dot--pendiente  { background: var(--color-warning); }
+    .mapa-legend__dot--completado { background: var(--color-success); }
+
+    /* ── Mapa Leaflet ──────────────────────────────────────── */
+    .mapa-container {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    #map {
+      width: 100%;
+      height: 420px;
+    }
+
+    /* Forzar tema oscuro en popups de Leaflet */
+    .leaflet-popup-content-wrapper {
+      background: var(--color-surface) !important;
+      border: 1px solid var(--color-border-gold) !important;
+      border-radius: var(--radius-md) !important;
+      box-shadow: var(--shadow-gold) !important;
+      color: var(--color-text) !important;
+    }
+    .leaflet-popup-tip {
+      background: var(--color-surface) !important;
+    }
+    .leaflet-popup-content {
+      margin: 12px 16px !important;
+      font-family: var(--font-body) !important;
+    }
+    .popup-cliente {
+      font-family: var(--font-display);
+      font-weight: var(--weight-semi);
+      font-size: 13px;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+    .popup-dir {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+    }
+    .popup-hora {
+      font-size: 12px;
+      color: var(--color-gold);
+      font-weight: 600;
+    }
+
+    /* Tile oscuro (filter sobre el mapa) */
+    .leaflet-tile { filter: brightness(0.85) saturate(0.7); }
+
+    /* ── Lista de servicios ────────────────────────────────── */
+    .servicios-list {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .servicio-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      transition: background var(--transition-fast);
+      cursor: pointer;
+    }
+    .servicio-item:last-child { border-bottom: none; }
+    .servicio-item:hover { background: var(--color-gold-muted); }
+
+    .servicio-item__left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .servicio-item__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .servicio-item__dot--pendiente  { background: var(--color-warning); }
+    .servicio-item__dot--completado { background: var(--color-success); }
+
+    .servicio-item__nombre {
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      font-weight: var(--weight-medium);
+    }
+
+    .servicio-item__hora {
+      font-size: var(--text-sm);
+      color: var(--color-gold);
+      font-weight: var(--weight-semi);
+      font-family: var(--font-display);
+    }
+  </style>
+</head>
+<body>
+
+<div class="mapa-page">
+
+  <!-- Header -->
+  <div class="mapa-header">
+    <a href="/usuario/dashboard/tecnico" class="mapa-header__back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div class="mapa-header__info">
+      <h2>Mapa de servicios</h2>
+      <p>Bogotá, Cundinamarca</p>
+    </div>
+  </div>
+
+  <!-- Cuerpo -->
+  <div class="mapa-body">
+
+    <!-- Leyenda -->
+    <div class="mapa-legend">
+      <div class="mapa-legend__item">
+        <span class="mapa-legend__dot mapa-legend__dot--pendiente"></span>
+        Pendiente
+      </div>
+      <div class="mapa-legend__item">
+        <span class="mapa-legend__dot mapa-legend__dot--completado"></span>
+        Completado
+      </div>
+    </div>
+
+    <!-- Mapa -->
+    <div class="mapa-container">
+      <div id="map"></div>
+    </div>
+
+    <!-- Lista de servicios -->
+    <div class="servicios-list">
+      <% servicios.forEach(function(s) { %>
+        <div class="servicio-item" onclick="flyToServicio(<%= s.lat %>, <%= s.lng %>)">
+          <div class="servicio-item__left">
+            <span class="servicio-item__dot servicio-item__dot--<%= s.estado.toLowerCase() %>"></span>
+            <span class="servicio-item__nombre"><%= s.cliente %></span>
+          </div>
+          <span class="servicio-item__hora"><%= s.hora %></span>
+        </div>
+      <% }); %>
+    </div>
+
+  </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  // ── Datos desde el servidor ─────────────────────────────────
+  const servicios = <%- JSON.stringify(servicios) %>;
+
+  // ── Coordenadas centro de Bogotá ────────────────────────────
+  const BOGOTA = [4.6097, -74.0817];
+
+  // ── Inicializar mapa ────────────────────────────────────────
+  const map = L.map('map', {
+    center: BOGOTA,
+    zoom: 12,
+    zoomControl: true,
+    attributionControl: false
+  });
+
+  // Tiles OpenStreetMap (gratis, sin API key)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+  }).addTo(map);
+
+  // ── Iconos personalizados ───────────────────────────────────
+  function crearIcono(estado) {
+    const color = estado === 'completado' ? '#3dba7a' : '#e6a817';
+    return L.divIcon({
+      className: '',
+      html: `<div style="
+        width:28px; height:28px;
+        background:${color};
+        border:3px solid #111;
+        border-radius:50% 50% 50% 0;
+        transform:rotate(-45deg);
+        box-shadow:0 2px 8px rgba(0,0,0,0.5);
+      "></div>`,
+      iconSize:   [28, 28],
+      iconAnchor: [14, 28],
+      popupAnchor:[0, -30]
+    });
+  }
+
+  // ── Marcadores de ubicación del técnico ────────────────────
+  // Leaflet Locate Control (geolocalización del técnico)
+  map.locate({ setView: false, watch: true, maxZoom: 16 });
+
+  let tecnicoMarker = null;
+
+  map.on('locationfound', function(e) {
+    if (tecnicoMarker) {
+      tecnicoMarker.setLatLng(e.latlng);
+    } else {
+      const iconoTecnico = L.divIcon({
+        className: '',
+        html: `<div style="
+          width:18px; height:18px;
+          background:#4fa3e0;
+          border:3px solid #fff;
+          border-radius:50%;
+          box-shadow:0 0 12px rgba(79,163,224,0.7);
+        "></div>`,
+        iconSize:   [18, 18],
+        iconAnchor: [9, 9]
+      });
+      tecnicoMarker = L.marker(e.latlng, { icon: iconoTecnico })
+        .addTo(map)
+        .bindPopup('<div class="popup-cliente">Tu ubicación</div>');
+    }
+  });
+
+  // ── Agregar marcadores de servicios ────────────────────────
+  const markers = {};
+
+  servicios.forEach(function(s) {
+    const marker = L.marker([s.lat, s.lng], { icon: crearIcono(s.estado.toLowerCase()) })
+      .addTo(map)
+      .bindPopup(`
+        <div class="popup-cliente">${s.cliente}</div>
+        <div class="popup-dir">${s.direccion}</div>
+        <div class="popup-hora">⏰ ${s.hora}</div>
+      `);
+    markers[s.id] = marker;
+  });
+
+  // ── Ajustar vista para mostrar todos los servicios ──────────
+  if (servicios.length > 0) {
+    const bounds = L.latLngBounds(servicios.map(s => [s.lat, s.lng]));
+    map.fitBounds(bounds, { padding: [48, 48] });
+  }
+
+  // ── Click en lista → volar al marcador ─────────────────────
+  function flyToServicio(lat, lng) {
+    map.flyTo([lat, lng], 15, { duration: 1.2 });
+    // Encontrar y abrir el popup del marcador correspondiente
+    Object.values(markers).forEach(function(m) {
+      const mPos = m.getLatLng();
+      if (Math.abs(mPos.lat - lat) < 0.0001 && Math.abs(mPos.lng - lng) < 0.0001) {
+        m.openPopup();
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

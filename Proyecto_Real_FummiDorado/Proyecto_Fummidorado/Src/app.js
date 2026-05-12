@@ -17,6 +17,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
+
+// MAPA DEL TECNICO
+app.use('/tecnico', tecnicoRoutes);
+
 // Cambiado para el despliegue
 //app.set("view engine", 'ejs');
 // app.set("views", "views")
