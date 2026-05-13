@@ -22,8 +22,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 
-// MAPA DEL TECNICO
-app.use('/tecnico', tecnicoRoutes);
 
  
 // Cambiado para el despliegue
@@ -52,6 +50,10 @@ app.use('/admin', adminRoutes);
 app.use('/documentosTecnicoCliente', clienteRoutes);
 app.use('/Usuario/cliente', clienteRoutes);
 app.use('/documentosTecnicoCliente', tecnicoRoutes);
+
+// Mapa del tecnico
+app.use('/mapa-tecnico', tecnicoRoutes);
+
 
 app.use('/password', passwordRoutes);
 
