@@ -17,7 +17,18 @@ const mostrarMapa = (req, res) => {
   });
 };
 
+const mostrarGestionClientes = async (req, res) => {
+  try {
+    const clientes = await clientesService.obtenerTodos();
+    const mensaje  = req.query.mensaje || null;
+    res.render('admin/gestion-clientes', { clientes, mensaje });
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).send('Error interno del servidor');
+  }
+};
 
 
-export default {mostrarHdsFt, mostrarDiagramasUpc, mostrarMapa };
+
+export default {mostrarHdsFt, mostrarDiagramasUpc, mostrarMapa, mostrarGestionClientes};
 

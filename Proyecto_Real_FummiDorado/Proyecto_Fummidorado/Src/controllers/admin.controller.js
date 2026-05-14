@@ -27,12 +27,6 @@ const mostrarDiagramasUpc = (req, res) => {
   res.render('documentosTecnicoCliente/diagramas-upc', { rol: 'admin' });
 };
 
-// CLIENTE
-const mostrarGestionClientes = (req, res) => {
-  const clientes = clientesService.obtenerTodos();
-  const mensaje  = req.query.mensaje || null;
-  res.render('admin/gestion-clientes', { clientes, mensaje });
-};
 
 const crearCliente = (req, res) => {
   const { nombre, nit, contacto, telefono, correo, direccion, sede } = req.body;
@@ -132,6 +126,20 @@ const actualizarUsuario = (req, res) => {
 const eliminarUsuario = (req, res) => {
   usuariosService.eliminar(req.body.id);
   res.redirect('/admin/gestion-usuarios?mensaje=eliminado');
+
+};
+
+
+// DB 
+const mostrarGestionClientes = async (req, res) => {
+  try {
+    const clientes = await clientesService.obtenerTodos();
+    const mensaje  = req.query.mensaje || null;
+    res.render('admin/gestion-clientes', { clientes, mensaje });
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).send('Error interno del servidor');
+  }
 };
 
 export default {

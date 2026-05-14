@@ -1,53 +1,38 @@
-// Datos mock — reemplazar por queries a BD cuando esté lista
-let clientesMock = [
-  {
-    id: 1,
-    nombre: 'Hotel Metropol',
-    nit: '900123456-7',
-    contacto: 'Pedro Gonzalez',
-    telefono: '3001234567',
-    correo: 'contacto@hotelmetropol.com',
-    direccion: 'Calle 72 #10-34, Bogotá',
-    sede: 'Sede Principal',
-    sedes: 2
-  },
-  {
-    id: 2,
-    nombre: 'El buen sabor',
-    nit: '800234567-8',
-    contacto: 'Maria Ramirez',
-    telefono: '3109876543',
-    correo: 'contacto@elbuensabor.com',
-    direccion: 'Carrera 15 #85-40, Bogotá',
-    sede: 'Kennedy',
-    sedes: 1
-  }
-];
-// comentarios
-let nextId = 3;
+import pool from '../config/db.js';
 
-const obtenerTodos = () => clientesMock;
-
-const obtenerPorId = (id) => clientesMock.find(c => c.id === parseInt(id)) || null;
-
-const crear = (datos) => {
-  const nuevo = { id: nextId++, sedes: 1, ...datos };
-  clientesMock.push(nuevo);
-  return nuevo;
+const obtenerTodos = async () => {
+  const result = await pool.query('SELECT * FROM clientes ORDER BY created_at DESC');
+  return result.rows;
 };
 
-const actualizar = (id, datos) => {
-  const idx = clientesMock.findIndex(c => c.id === parseInt(id));
-  if (idx === -1) return null;
-  clientesMock[idx] = { ...clientesMock[idx], ...datos };
-  return clientesMock[idx];
+const obtenerPorId = async (id) => {
+  const result = await pool.query('SELECT * FROM clientes WHERE id = $1', [id]);
+  return result.rows[0] || null;
 };
 
-const eliminar = (id) => {
-  const idx = clientesMock.findIndex(c => c.id === parseInt(id));
-  if (idx === -1) return false;
-  clientesMock.splice(idx, 1);
-  return true;
+const crear = async (datos) => {
+  const { nombre, nit, contacto, telefono, correo, direccion, sede } = datos;
+  const result = await pool.query(
+    `INSERT INTO clientes (nombre, nit, contacto, telefono, correo, direccion, sede)
+     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+    [nombre, nit, contacto, telefono, correo, direccion, sede]
+  );
+  return result.rows[0];
+};
+
+const actualizar = async (id, datos) => {
+  const { nombre, nit, contacto, telefono, correo, direccion, sede } = datos;
+  const result = await pool.query(
+    `UPDATE clientes SET nombre=$1, nit=$2, contacto=$3, telefono=$4,
+     correo=$5, direccion=$6, sede=$7 WHERE id=$8 RETURNING *`,
+    [nombre, nit, contacto, telefono, correo, direccion, sede, id]
+  );
+  return result.rows[0] || null;
+};
+
+const eliminar = async (id) => {
+  const result = await pool.query('DELETE FROM clientes WHERE id = $1', [id]);
+  return result.rowCount > 0;
 };
 
 export default { obtenerTodos, obtenerPorId, crear, actualizar, eliminar };
