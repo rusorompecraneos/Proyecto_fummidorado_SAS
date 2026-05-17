@@ -1,22 +1,30 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+import { Sequelize } from 'sequelize';
 
-const pool = new Pool({
-  host:     process.env.DB_HOST     || 'localhost',
-  port:     process.env.DB_PORT     || 5432,
-  user:     process.env.DB_USER     || 'postgres',
-  password: process.env.DB_PASSWORD || '123456789',
-  database: process.env.DB_NAME     || 'Fummi_Dorado_SAS_BD'
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host:    process.env.DB_HOST || 'localhost',
+    port:    process.env.DB_PORT || 5432,
+    dialect: 'postgres',
+    logging: false // cambia a console.log si quieres ver las queries
+  }
+);
 
-// Verificar conexión al arrancar
-pool.connect()
-  .then(client => {
-    console.log('✅ Conectado a PostgreSQL correctamente');
-    client.release();
-  })
-  .catch(err => {
-    console.error('❌ Error conectando a PostgreSQL:', err.message);
-  });
+export const conectarDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('✅ Conectado a PostgreSQL con Sequelize');
 
-export default pool;
+    // Esto crea las tablas automáticamente si no existen
+    // alter: true actualiza columnas si cambian los modelos
+    await sequelize.sync({ alter: true });
+    console.log('✅ Tablas sincronizadas correctamente');
+  } catch (error) {
+    console.error('❌ Error conectando a PostgreSQL:', error.message);
+    process.exit(1);
+  }
+};
+
+export default sequelize;

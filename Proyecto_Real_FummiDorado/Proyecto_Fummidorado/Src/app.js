@@ -4,15 +4,19 @@ import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import session from 'express-session';
 import dotenv from 'dotenv';
+import { conectarDB } from './config/db.js';
 
-
+// Importar rutas
 import passwordRoutes from './routes/password.routes.js';
 import appRouter from "./routes/router.js";
 import clienteRoutes from './routes/cliente.routes.js';
 import tecnicoRoutes from './routes/tecnico.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 
-// 
+// Importar modelos para que Sequelize los registre
+import './models/index.js';
+
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -118,7 +122,11 @@ app.post('/usuario/login', (req, res) => {
   res.redirect('/login');
 });
 
+// Arrancar servidor DESPUÉS de conectar la BD
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Server running 🚀 at http://localhost:${port}`);
+conectarDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running 🚀 at http://localhost:${PORT}`);
+  });
 });

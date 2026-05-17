@@ -1,55 +1,41 @@
-import pool from '../config/db.js';
+import { Servicio } from '../models/index.js';
 
 const obtenerTodos = async () => {
-  const result = await pool.query('SELECT * FROM servicios ORDER BY created_at DESC');
-  return result.rows;
+  return await Servicio.findAll({ order: [['created_at', 'DESC']] });
 };
 
 const obtenerPorId = async (id) => {
-  const result = await pool.query('SELECT * FROM servicios WHERE id = $1', [id]);
-  return result.rows[0] || null;
+  return await Servicio.findByPk(id);
 };
 
 const obtenerServiciosHoy = async () => {
   const hoy = new Date().toLocaleDateString('es-CO');
-  const result = await pool.query(
-    'SELECT * FROM servicios WHERE fecha = $1 ORDER BY hora ASC',
-    [hoy]
-  );
-  return result.rows;
+  return await Servicio.findAll({
+    where: { fecha: hoy },
+    order: [['hora', 'ASC']]
+  });
 };
 
 const obtenerEstadisticas = async () => {
-  const servicios  = await obtenerServiciosHoy();
-  const total      = servicios.length;
+  const servicios   = await obtenerServiciosHoy();
+  const total       = servicios.length;
   const completados = servicios.filter(s => s.estado === 'Completado').length;
   const pendientes  = servicios.filter(s => s.estado === 'Pendiente').length;
   return { total, completados, pendientes };
 };
 
 const crear = async (datos) => {
-  const { cliente_id, tecnico_id, cliente, sede, direccion, tecnico, fecha, hora, tipo, estado } = datos;
-  const result = await pool.query(
-    `INSERT INTO servicios (cliente_id, tecnico_id, cliente, sede, direccion, tecnico, fecha, hora, tipo, estado)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-    [cliente_id || null, tecnico_id || null, cliente, sede, direccion, tecnico, fecha, hora, tipo, estado || 'Pendiente']
-  );
-  return result.rows[0];
+  return await Servicio.create(datos);
 };
 
 const actualizar = async (id, datos) => {
-  const { cliente, sede, direccion, tecnico, fecha, hora, tipo, estado } = datos;
-  const result = await pool.query(
-    `UPDATE servicios SET cliente=$1, sede=$2, direccion=$3, tecnico=$4,
-     fecha=$5, hora=$6, tipo=$7, estado=$8 WHERE id=$9 RETURNING *`,
-    [cliente, sede, direccion, tecnico, fecha, hora, tipo, estado, id]
-  );
-  return result.rows[0] || null;
+  await Servicio.update(datos, { where: { id } });
+  return obtenerPorId(id);
 };
 
 const eliminar = async (id) => {
-  const result = await pool.query('DELETE FROM servicios WHERE id = $1', [id]);
-  return result.rowCount > 0;
+  const result = await Servicio.destroy({ where: { id } });
+  return result > 0;
 };
 
 export default {

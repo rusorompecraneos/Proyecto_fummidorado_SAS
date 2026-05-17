@@ -1,62 +1,47 @@
-import pool from '../config/db.js';
+import { Usuario } from '../models/index.js';
 
 const obtenerTodos = async () => {
-  const result = await pool.query('SELECT * FROM usuarios ORDER BY created_at DESC');
-  return result.rows;
+  return await Usuario.findAll({ order: [['created_at', 'DESC']] });
 };
 
 const obtenerPorId = async (id) => {
-  const result = await pool.query('SELECT * FROM usuarios WHERE id = $1', [id]);
-  return result.rows[0] || null;
+  return await Usuario.findByPk(id);
 };
 
 const crear = async (datos) => {
-  const { nombre, correo, usuario, password, rol } = datos;
-  const result = await pool.query(
-    'INSERT INTO usuarios (nombre, correo, usuario, password, rol) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [nombre, correo, usuario, password, rol]
-  );
-  return result.rows[0];
+  return await Usuario.create(datos);
 };
 
 const actualizar = async (id, datos) => {
-  const { nombre, correo, usuario, password, rol } = datos;
-  const result = await pool.query(
-    'UPDATE usuarios SET nombre=$1, correo=$2, usuario=$3, password=$4, rol=$5 WHERE id=$6 RETURNING *',
-    [nombre, correo, usuario, password, rol, id]
-  );
-  return result.rows[0] || null;
+  await Usuario.update(datos, { where: { id } });
+  return obtenerPorId(id);
 };
 
 const eliminar = async (id) => {
-  const result = await pool.query('DELETE FROM usuarios WHERE id = $1', [id]);
-  return result.rowCount > 0;
+  const result = await Usuario.destroy({ where: { id } });
+  return result > 0;
 };
 
 const existeUsuario = async (usuario, excludeId = null) => {
-  const query  = excludeId
-    ? 'SELECT id FROM usuarios WHERE usuario = $1 AND id != $2'
-    : 'SELECT id FROM usuarios WHERE usuario = $1';
-  const params = excludeId ? [usuario, excludeId] : [usuario];
-  const result = await pool.query(query, params);
-  return result.rows.length > 0;
+  const { Op } = await import('sequelize');
+  const where = excludeId
+    ? { usuario, id: { [Op.ne]: excludeId } }
+    : { usuario };
+  const found = await Usuario.findOne({ where });
+  return !!found;
 };
 
 const existeCorreo = async (correo, excludeId = null) => {
-  const query  = excludeId
-    ? 'SELECT id FROM usuarios WHERE correo = $1 AND id != $2'
-    : 'SELECT id FROM usuarios WHERE correo = $1';
-  const params = excludeId ? [correo, excludeId] : [correo];
-  const result = await pool.query(query, params);
-  return result.rows.length > 0;
+  const { Op } = await import('sequelize');
+  const where = excludeId
+    ? { correo, id: { [Op.ne]: excludeId } }
+    : { correo };
+  const found = await Usuario.findOne({ where });
+  return !!found;
 };
 
 const buscarPorCredenciales = async (usuario) => {
-  const result = await pool.query(
-    'SELECT * FROM usuarios WHERE usuario = $1 AND activo = TRUE',
-    [usuario]
-  );
-  return result.rows[0] || null;
+  return await Usuario.findOne({ where: { usuario, activo: true } });
 };
 
 export default {
